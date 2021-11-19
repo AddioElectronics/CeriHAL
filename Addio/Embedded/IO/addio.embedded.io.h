@@ -1,0 +1,3 @@
+#ifndef ADDIO.EMBEDDED.IO_H_
+#define ADDIO.EMBEDDED.IO_H_
+#endif /* ADDIO.EMBEDDED.IO_H_ */
