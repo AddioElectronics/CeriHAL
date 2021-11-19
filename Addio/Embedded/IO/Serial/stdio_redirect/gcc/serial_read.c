@@ -14,7 +14,7 @@ int _read(int file, char *ptr, int len)
 		return -1;
 	}
 
-	n = reader_readBytes((uint8_t *)ptr, len);
+	n = serial_readBytes((uint8_t *)ptr, len);
 	if (n < 0) {
 		return -1;
 	}

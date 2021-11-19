@@ -19,27 +19,27 @@
 *	These functions require addio_io.h, and are incompatible with hal_io.h
 */
 #if __has_include("../../addio_io.h")
-int reader_peek();
-int reader_available();
+int serial_peek();
+int serial_available();
 #else
 #warning Unsupported
 #endif
 
 
-int reader_read();
+int serial_read();
 
-bool reader_find(char* target, size_t length);
-bool reader_findUntil(char *target, size_t targetLen, char *terminate, size_t termLen);
-int reader_findMulti( struct MultiTarget *targets, int tCount);
+bool serial_find(char* target, size_t length);
+bool serial_findUntil(char *target, size_t targetLen, char *terminate, size_t termLen);
+int serial_findMulti( struct MultiTarget *targets, int tCount);
 
-size_t reader_readBytes(char *buffer, size_t length);
-size_t reader_readBytesUntil(char terminator, char *buffer, size_t length);
+size_t serial_readBytes(char *buffer, size_t length);
+size_t serial_readBytesUntil(char terminator, char *buffer, size_t length);
 
-string_t* reader_readString();
-string_t* reader_readStringUntil(char terminator);
+string_t* serial_readString();
+string_t* serial_readStringUntil(char terminator);
 
-long reader_parseInt(enum LookaheadMode lookahead, char ignore);
-float reader_parseFloat(enum LookaheadMode lookahead, char ignore);
+long serial_parseInt(enum LookaheadMode lookahead, char ignore);
+float serial_parseFloat(enum LookaheadMode lookahead, char ignore);
 
 
 #else

@@ -21,46 +21,46 @@
 size_t serial_availableForWrite();
 
 
-size_t write_byte(uint8_t b);
-size_t write(const char *buffer, size_t size);
+size_t serial_write_byte(uint8_t b);
+size_t serial_write(const char *buffer, size_t size);
 
-size_t printf_(const char* format, ...);
-size_t vprintf_(const char* format, va_list ap);
-size_t print_str(const char* str);
-inline size_t print_char(const char c);
-size_t print_bool(const bool b);
+size_t serial_printf(const char* format, ...);
+size_t serial_vprintf(const char* format, va_list ap);
+size_t serial_print_str(const char* str);
+inline size_t serial_print_char(const char c);
+size_t serial_print_bool(const bool b);
 
-inline size_t print_data_base(const unsigned char *data, size_t input_length, uint8_t base);
-size_t print_data_base_sep(const unsigned char *data, size_t input_length, uint8_t base, char separator);
-size_t print_data_base64(const unsigned char *data, size_t input_length);
-size_t print_data_base64_sep(const unsigned char *data, size_t input_length, char separator);
+inline size_t serial_print_data_base(const unsigned char *data, size_t input_length, uint8_t base);
+size_t serial_print_data_base_sep(const unsigned char *data, size_t input_length, uint8_t base, char separator);
+size_t serial_print_data_base64(const unsigned char *data, size_t input_length);
+size_t serial_print_data_base64_sep(const unsigned char *data, size_t input_length, char separator);
 
-size_t println_(void);
-size_t printlnf_(const char* format, ...);
-inline size_t vprintlnf_(const char* format, va_list ap);
-size_t println_str(const char* str);
-inline size_t println_char(const char c);
-inline size_t println_bool(const bool b);
+size_t serial_println(void);
+size_t serial_printlnf(const char* format, ...);
+inline size_t serial_vprintlnf(const char* format, va_list ap);
+size_t serial_println_str(const char* str);
+inline size_t serial_println_char(const char c);
+inline size_t serial_println_bool(const bool b);
 
-inline size_t println_data_base(const unsigned char *data, size_t input_length, uint8_t base, uint8_t line_length);
-size_t println_data_base_sep(const unsigned char *data, size_t input_length, uint8_t base, uint8_t line_length, char separator);
-inline size_t println_data_base64(const unsigned char *data, size_t input_length, uint8_t line_length);
-size_t println_data_base64_sep(const unsigned char *data, size_t input_length, uint8_t line_length, char separator);
+inline size_t serial_println_data_base(const unsigned char *data, size_t input_length, uint8_t base, uint8_t line_length);
+size_t serial_println_data_base_sep(const unsigned char *data, size_t input_length, uint8_t base, uint8_t line_length, char separator);
+inline size_t serial_println_data_base64(const unsigned char *data, size_t input_length, uint8_t line_length);
+size_t serial_println_data_base64_sep(const unsigned char *data, size_t input_length, uint8_t line_length, char separator);
 
-size_t printNumber(long n, uint8_t base);
-size_t printuNumber(unsigned long n, uint8_t base);
-inline size_t printlnNumber(long n, uint8_t base);
-inline size_t printlnuNumber(unsigned long n, uint8_t base);
+size_t serial_printNumber(long n, uint8_t base);
+size_t serial_printuNumber(unsigned long n, uint8_t base);
+inline size_t serial_printlnNumber(long n, uint8_t base);
+inline size_t serial_printlnuNumber(unsigned long n, uint8_t base);
 
-size_t printNumberPad(long n, uint8_t base, uint8_t pad);
-size_t printuNumberPad(unsigned long n, uint8_t base, uint8_t pad);
-inline size_t printlnNumberPad(long n, uint8_t base, uint8_t pad);
-inline size_t printlnuNumberPad(unsigned long n, uint8_t base, uint8_t pad);
+size_t serial_printNumberPad(long n, uint8_t base, uint8_t pad);
+size_t serial_printuNumberPad(unsigned long n, uint8_t base, uint8_t pad);
+inline size_t serial_printlnNumberPad(long n, uint8_t base, uint8_t pad);
+inline size_t serial_printlnuNumberPad(unsigned long n, uint8_t base, uint8_t pad);
 
-size_t printFloat(double number, uint8_t digits);
-inline size_t printlnFloat(double number, uint8_t digits);
+size_t serial_printFloat(double number, uint8_t digits);
+inline size_t serial_printlnFloat(double number, uint8_t digits);
 
-size_t print_data_hex_addr(const unsigned char *data, size_t input_length, uint8_t line_length, bool labels, bool print_text);
+size_t serial_print_data_hex_addr(const unsigned char *data, size_t input_length, uint8_t line_length, bool labels, bool print_text);
 
 #pragma endregion Functions
 

@@ -22,18 +22,18 @@ char*: call_print_str((generic_union_t){.u64 = (uint32_t)x}),						\
 const char: print_char(x),															\
 const unsigned char: print_char(x),													\
 const signed char: print_char(x),													\
-char: print_char(x),																\
-signed char: printNumber(x, 10),													\
-unsigned char: printuNumber(x, 10),													\
-int : printNumber(x, 10),															\
+char: serial_print_char(x),															\
+signed char: serial_printNumber(x, 10),												\
+unsigned char: serial_printuNumber(x, 10),											\
+int : serial_printNumber(x, 10),													\
 unsigned int : printuNumber(x, 10),													\
-short : printNumber(x, 10),															\
+short : serial_printNumber(x, 10),													\
 unsigned short : printuNumber(x, 10),												\
-long : printNumber(x, 10),															\
-unsigned long : printuNumber(x, 10),												\
+long : serial_printNumber(x, 10),													\
+unsigned long : serial_printuNumber(x, 10),											\
 float : call_printFloat((generic_union_t)x, 2),										\
 double : call_printDouble((generic_union_t)x, 2),									\
-_Bool : print_bool(x),																\
+_Bool : serial_print_bool(x),														\
 default:0)
 
 /*
@@ -51,10 +51,10 @@ default:0)
 #define INTERNAL_PRINTF(x, ...) _Generic((x),										\
 const char*: call_printf_((generic_union_t){.u64 = (uint32_t)x}, ##__VA_ARGS__),	\
 char*: call_printf_((generic_union_t){.u64 = (uint32_t)x}, ##__VA_ARGS__),			\
-const char: print_char(x),															\
-const unsigned char: print_char(x),													\
-const signed char: print_char(x),													\
-char: print_char(x),																\
+const char: serial_print_char(x),													\
+const unsigned char: serial_print_char(x),											\
+const signed char: serial_print_char(x),											\
+char: serial_print_char(x),															\
 signed char: call_printNumber(x, ##__VA_ARGS__),									\
 unsigned char: call_printuNumber(x, ##__VA_ARGS__),									\
 int : call_printNumber(x, ##__VA_ARGS__),											\
@@ -65,7 +65,7 @@ long : call_printNumber(x, ##__VA_ARGS__),											\
 unsigned long : call_printuNumber(x, ##__VA_ARGS__),								\
 float : call_printFloat((generic_union_t)x, ##__VA_ARGS__),							\
 double : call_printDouble((generic_union_t)x, ##__VA_ARGS__),						\
-_Bool : print_bool(x),																\
+_Bool : serial_print_bool(x),														\
 default:0)
 
 /*
@@ -80,22 +80,22 @@ default:0)
 #define INTERNAL_PRINTLN(x) _Generic((x),											\
 const char*: call_println_str((generic_union_t){.u64 = (uint32_t)x}),				\
 char*: call_println_str((generic_union_t){.u64 = (uint32_t)x}),						\
-const char: println_char(x),														\
-const unsigned char: println_char(x),												\
-const signed char: println_char(x),													\
-char: println_char(x),																\
-signed char: printlnNumber(x, 10),													\
-unsigned char: printlnuNumber(x, 10),												\
-int : printlnNumber(x, 10),															\
-unsigned int : printlnuNumber(x, 10),												\
-short : printlnNumber(x, 10),														\
-unsigned short : printlnuNumber(x, 10),												\
-long : printlnNumber(x, 10),														\
+const char: serial_println_char(x),													\
+const unsigned char: serial_println_char(x),										\
+const signed char: serial_println_char(x),											\
+char: serial_println_char(x),														\
+signed char: serial_printlnNumber(x, 10),											\
+unsigned char: serial_printlnuNumber(x, 10),										\
+int : serial_printlnNumber(x, 10),													\
+unsigned int : serial_printlnuNumber(x, 10),										\
+short : serial_printlnNumber(x, 10),												\
+unsigned short : serial_printlnuNumber(x, 10),										\
+long : serial_printlnNumber(x, 10),													\
 unsigned long : printlnuNumber(x, 10),												\
 float : call_printlnFloat((generic_union_t)x, 2),									\
 double :call_printlnDouble((generic_union_t)x, 2),									\
-_Bool : println_bool(x),															\
-default:println_())
+_Bool : serial_println_bool(x),														\
+default: serial_println())
 
 /*
 *	Macro used to "overload" println functions, with formatting.
@@ -112,10 +112,10 @@ default:println_())
 #define INTERNAL_PRINTFLN(x, ...) _Generic((x),										\
 const char*: call_printfln_((generic_union_t){.u64 = (uint32_t)x}, ##__VA_ARGS__),	\
 char*:call_printfln_((generic_union_t){.u64 = (uint32_t)x},  ##__VA_ARGS__),		\
-const char: println_char(x),														\
-const unsigned char: println_char(x),												\
-const signed char: println_char(x),													\
-char: println_char(x),																\
+const char: serial_println_char(x),													\
+const unsigned char: serial_println_char(x),										\
+const signed char: serial_println_char(x),											\
+char: serial_println_char(x),														\
 signed char: call_printlnNumber(x, ##__VA_ARGS__),									\
 unsigned char: call_printlnuNumber(x, ##__VA_ARGS__),								\
 int : call_printlnNumber(x, ##__VA_ARGS__),											\
@@ -126,8 +126,8 @@ long : call_printlnNumber(x, ##__VA_ARGS__),										\
 unsigned long : call_printlnuNumber(x, ##__VA_ARGS__),								\
 float : call_printlnFloat((generic_union_t)x, ##__VA_ARGS__),						\
 double : call_printlnDouble((generic_union_t)x, ##__VA_ARGS__),						\
-_Bool : println_bool(x),															\
-default:println_())
+_Bool : serial_println_bool(x),														\
+default:serial_println())
 
 #pragma endregion Arduino Like Macros
 
@@ -145,8 +145,8 @@ default:println_())
 //GENETICC_REPEAT_TYPES(REPEATER_MACRO_GENETICC_SERIAL_WRITE_POINTER(b, length))	\
 //default:				write_byte(b)
 
-#define SERIAL_WRITE_2(b, size)												write(b, size)
-#define SERIAL_WRITE_1(b)													write_byte(b)
+#define SERIAL_WRITE_2(b, size)												serial_write(b, size)
+#define SERIAL_WRITE_1(b)													serial_write_byte(b)
 #define SERIAL_WRITE_MACRO_CHOOSER(...)					\
 GET_ARGUMENT_2(__VA_ARGS__,								\
 SERIAL_WRITE_2,											\
@@ -168,7 +168,7 @@ SERIAL_WRITE_1, )
 *	/returns	size_t			How many bytes were transmitted.
 */
 #define INTERNAL_PRINT_DATA_BASE(data, length, base, separator) \
-print_data_base_sep(data, length, base, separator);
+serial_print_data_base_sep(data, length, base, separator);
 
 #define INTERNAL_PRINT_DATA_BASE_4(data, length, base, separator)	INTERNAL_PRINT_DATA_BASE(data, length, base, separator)
 #define INTERNAL_PRINT_DATA_BASE_3(data, length, base)				INTERNAL_PRINT_DATA_BASE(data, length, base, '\0')
@@ -190,7 +190,7 @@ INTERNAL_PRINT_DATA_BASE_2, )
 *	/returns	size_t			How many bytes were transmitted.
 */
 #define INTERNAL_PRINTLN_DATA_BASE(data, length, base, separator) \
-println_data_base_sep(data, length, base, separator);
+serial_println_data_base_sep(data, length, base, separator);
 
 #define INTERNAL_PRINTLN_DATA_BASE_4(data, length, base, separator)	INTERNAL_PRINTLN_DATA_BASE(data, length, base, separator)
 #define INTERNAL_PRINTLN_DATA_BASE_3(data, length, base)			INTERNAL_PRINTLN_DATA_BASE(data, length, base, '\0')
@@ -216,7 +216,7 @@ INTERNAL_PRINTLN_DATA_BASE_1, )
 *	/returns	size_t			How many bytes were transmitted.
 */
 #define INTERNAL_PRINTLN_DATA_HEX_EDITOR(data, length, line_length, labels, print_text) \
-print_data_hex_addr(data, length, line_length, labels, print_text);
+serial_print_data_hex_addr(data, length, line_length, labels, print_text);
 
 #define INTERNAL_PRINTLN_DATA_HEX_EDITOR_5(data, length, line_length, labels, print_text)	INTERNAL_PRINTLN_DATA_HEX_EDITOR(data, length, line_length, separator)
 #define INTERNAL_PRINTLN_DATA_HEX_EDITOR_4(data, length, line_length, labels)				INTERNAL_PRINTLN_DATA_HEX_EDITOR(data, length, line_length, separator)

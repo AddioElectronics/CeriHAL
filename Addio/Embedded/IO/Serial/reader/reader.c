@@ -27,24 +27,24 @@ unsigned long _startMillis;
 
 
 
-int reader_timedRead()
+int serial_timedRead()
 {
 	int c;
 	_startMillis = millis();
 	do {
-		c = reader_read();
+		c = serial_read();
 		if (c >= 0) return c;
 	} while(millis() - _startMillis < serial_timeout);
 	return -1;     // -1 indicates timeout
 }
 
 //	*Warning : Not all I/O descriptors are capable of peeking. It is up to you to figure out what libraries are compatible. (ex. hal usart async is compatible, where hal usart sync is not)
-int reader_timedPeek()
+int serial_timedPeek()
 {
 	int c;
 	_startMillis = millis();
 	do {
-		c = reader_peek();
+		c = serial_peek();
 		if (c >= 0) return c;
 	} while(millis() - _startMillis < serial_timeout);
 	return -1;     // -1 indicates timeout
@@ -53,11 +53,11 @@ int reader_timedPeek()
 //	*Warning : Not all I/O descriptors are capable of peeking. It is up to you to figure out what libraries are compatible. (ex. hal usart async is compatible, where hal usart sync is not)
 // returns peek of the next digit in the stream or -1 if timeout
 // discards non-numeric characters
-int reader_peekNextDigit(enum LookaheadMode lookahead, bool detectDecimal)
+int serial_peekNextDigit(enum LookaheadMode lookahead, bool detectDecimal)
 {
 	int c;
 	while (1) {
-		c = reader_timedPeek();
+		c = serial_timedPeek();
 
 		if( c < 0 ||
 		c == '-' ||
@@ -77,7 +77,7 @@ int reader_peekNextDigit(enum LookaheadMode lookahead, bool detectDecimal)
 			case SKIP_ALL:
 			break;
 		}
-		reader_read();  // discard non-numeric
+		serial_read();  // discard non-numeric
 	}
 }
 
@@ -86,7 +86,7 @@ int reader_peekNextDigit(enum LookaheadMode lookahead, bool detectDecimal)
 #pragma region Public Functions
 
 //	Warning : This is unreliable with non buffered libraries like "hal usart sync." 
-int __attribute__((__always_inline__)) reader_available()
+int __attribute__((__always_inline__)) serial_available()
 {
 	#if __has_include("../../addio_io.h")
 	
@@ -105,7 +105,7 @@ int __attribute__((__always_inline__)) reader_available()
 *
 *	/returns	The first byte of incoming serial data available (or -1 if no data is available). Data type: int.
 */
-int __attribute__((__always_inline__)) reader_read()
+int __attribute__((__always_inline__)) serial_read()
 {
 	//#if __has_include("addio_io.h")
 	//
@@ -132,7 +132,7 @@ int __attribute__((__always_inline__)) reader_read()
 *
 *	/returns	The first byte of incoming serial data available (or -1 if no data is available). Data type: int.
 */
-int __attribute__((__always_inline__)) reader_peek()
+int __attribute__((__always_inline__)) serial_peek()
 {
 	#if __has_include("../../addio_io.h")
 	
@@ -150,33 +150,33 @@ int __attribute__((__always_inline__)) reader_peek()
 
 // reads data from the stream until the target string of given length is found
 // returns true if target string is found, false if timed out
-bool __attribute__((__always_inline__)) reader_find(char* target, size_t length)
+bool __attribute__((__always_inline__)) serial_find(char* target, size_t length)
 {
-	return reader_findUntil(target, length, NULL, 0);
+	return serial_findUntil(target, length, NULL, 0);
 }
 
-bool __attribute__((__always_inline__)) reader_findChar(char target)
+bool __attribute__((__always_inline__)) serial_findChar(char target)
 {
-	return reader_find(&target, 1);
+	return serial_find(&target, 1);
 }
 
 
 // reads data from the stream until the target string of the given length is found
 // search terminated if the terminator string is found
 // returns true if target string is found, false if terminated or timed out
-bool reader_findUntil(char *target, size_t targetLen, char *terminator, size_t termLen)
+bool serial_findUntil(char *target, size_t targetLen, char *terminator, size_t termLen)
 {
 	if (terminator == NULL) {
 		struct MultiTarget t[1] = {{target, targetLen, 0}};
-		return reader_findMulti(t, 1) == 0 ? true : false;
+		return serial_findMulti(t, 1) == 0 ? true : false;
 		} else {
 		struct MultiTarget t[2] = {{target, targetLen, 0}, {terminator, termLen, 0}};
-		return reader_findMulti(t, 2) == 0 ? true : false;
+		return serial_findMulti(t, 2) == 0 ? true : false;
 	}
 }
 
 
-int reader_findMulti( struct MultiTarget *targets, int tCount) 
+int serial_findMulti( struct MultiTarget *targets, int tCount) 
 {
 	// any zero length target string automatically matches and would make
 	// a mess of the rest of the algorithm.
@@ -186,7 +186,7 @@ int reader_findMulti( struct MultiTarget *targets, int tCount)
 	}
 
 	while (1) {
-		int c = reader_timedRead();
+		int c = serial_timedRead();
 		if (c < 0)
 		return -1;
 
@@ -249,11 +249,11 @@ int reader_findMulti( struct MultiTarget *targets, int tCount)
 // returns the number of characters placed in the buffer
 // the buffer is NOT null terminated.
 //
-size_t reader_readBytes(char* buffer, size_t length)
+size_t serial_readBytes(char* buffer, size_t length)
 {
 	size_t count = 0;
 	while (count < length) {
-		int c = reader_timedRead();
+		int c = serial_timedRead();
 		if (c < 0) break;
 		*buffer++ = (char)c;
 		count++;
@@ -266,12 +266,12 @@ size_t reader_readBytes(char* buffer, size_t length)
 // terminates if length characters have been read, timeout, or if the terminator character  detected
 // returns the number of characters placed in the buffer (0 means no valid data found)
 
-size_t reader_readBytesUntil(char terminator, char *buffer, size_t length)
+size_t serial_readBytesUntil(char terminator, char *buffer, size_t length)
 {
 	if (length < 1) return 0;
 	size_t index = 0;
 	while (index < length) {
-		int c = reader_timedRead();
+		int c = serial_timedRead();
 		if (c < 0 || c == terminator) break;
 		*buffer++ = (char)c;
 		index++;
@@ -279,27 +279,27 @@ size_t reader_readBytesUntil(char terminator, char *buffer, size_t length)
 	return index; // return number of characters, not including null terminator
 }
 
-string_t* __attribute__((__always_inline__)) reader_readString()
+string_t* __attribute__((__always_inline__)) serial_readString()
 {
-	return reader_readStringUntil(-1);
+	return serial_readStringUntil(-1);
 	//string_t* ret = new_cstring(16);
-	//int c = reader_timedRead();
+	//int c = serial_timedRead();
 	//while (c >= 0)
 	//{
 		//cstring_append(ret, &c, 1);
-		//c = reader_timedRead();
+		//c = serial_timedRead();
 	//}
 	//return ret;
 }
 
-string_t* reader_readStringUntil(char terminator)
+string_t* serial_readStringUntil(char terminator)
 {
 	string_t* ret = new_cstring(16);
-	int c = reader_timedRead();
+	int c = serial_timedRead();
 	while (c >= 0 && c != terminator)
 	{
 		cstring_append(ret, &c, 1);
-		c = reader_timedRead();
+		c = serial_timedRead();
 	}
 	return ret;
 }
@@ -311,13 +311,13 @@ string_t* reader_readStringUntil(char terminator)
 // See LookaheadMode enumeration at the top of the file.
 // Lookahead is terminated by the first character that is not a valid part of an integer.
 // Once parsing commences, 'ignore' will be skipped in the stream.
-long reader_parseInt(enum LookaheadMode lookahead, char ignore)
+long serial_parseInt(enum LookaheadMode lookahead, char ignore)
 {
 	bool isNegative = false;
 	long value = 0;
 	int c;
 
-	c = reader_peekNextDigit(lookahead, false);
+	c = serial_peekNextDigit(lookahead, false);
 	// ignore non numeric leading characters
 	if(c < 0)
 	return 0; // zero returned if timeout
@@ -329,8 +329,8 @@ long reader_parseInt(enum LookaheadMode lookahead, char ignore)
 		isNegative = true;
 		else if(c >= '0' && c <= '9')        // is c a digit?
 		value = value * 10 + c - '0';
-		reader_read();  // consume the character we got with peek
-		c = reader_timedPeek();
+		serial_read();  // consume the character we got with peek
+		c = serial_timedPeek();
 	}
 	while( (c >= '0' && c <= '9') || c == ignore );
 
@@ -341,7 +341,7 @@ long reader_parseInt(enum LookaheadMode lookahead, char ignore)
 
 //	*Warning : This function uses "peek." Not all I/O descriptors are capable of peeking. It is up to you to figure out what libraries are compatible. (ex. hal usart async is compatible, where hal usart sync is not)
 // as parseInt but returns a floating point value
-float reader_parseFloat(enum LookaheadMode lookahead, char ignore)
+float serial_parseFloat(enum LookaheadMode lookahead, char ignore)
 {
 	bool isNegative = false;
 	bool isFraction = false;
@@ -349,7 +349,7 @@ float reader_parseFloat(enum LookaheadMode lookahead, char ignore)
 	int c;
 	float fraction = 1.0;
 
-	c = reader_peekNextDigit(lookahead, true);
+	c = serial_peekNextDigit(lookahead, true);
 	// ignore non numeric leading characters
 	if(c < 0)
 	return 0; // zero returned if timeout
@@ -366,8 +366,8 @@ float reader_parseFloat(enum LookaheadMode lookahead, char ignore)
 			if(isFraction)
 			fraction *= 0.1;
 		}
-		reader_read();  // consume the character we got with peek
-		c = reader_timedPeek();
+		serial_read();  // consume the character we got with peek
+		c = serial_timedPeek();
 	}
 	while( (c >= '0' && c <= '9')  || (c == '.' && !isFraction) || c == ignore );
 

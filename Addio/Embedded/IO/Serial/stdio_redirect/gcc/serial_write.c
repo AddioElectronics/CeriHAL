@@ -15,7 +15,7 @@ int _write(int file, char *ptr, int len)
 	}
 
 	//Force standard printf functions to use our write function.
-	n = write((const uint8_t *)ptr, len);
+	n = serial_write((const uint8_t *)ptr, len);
 	if (n < 0) {
 		return -1;
 	}

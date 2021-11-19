@@ -29,7 +29,7 @@ extern struct io_descriptor* serial_io;
 *	*printf		Standard printf function, sends characters 1 at a time.
 *				Whole string will always be sent.
 */
-#define INTERNAL_PRINTF_FUNC(x, ...) printf_(x, ##__VA_ARGS__) //printf_(x, ##__VA_ARGS__)
+#define INTERNAL_PRINTF_FUNC(x, ...) serial_printf(x, ##__VA_ARGS__) //printf_(x, ##__VA_ARGS__)
 
 
 extern unsigned long serial_timeout;
@@ -49,7 +49,7 @@ size_t serial_availableForWrite()
 
 unsigned long previous_write_timestamp;
 
-size_t write_byte(uint8_t b)
+size_t serial_write_byte(uint8_t b)
 {
 	ASSERT(serial_io);
 
@@ -102,7 +102,7 @@ size_t write_byte(uint8_t b)
 	 
 }
 
-size_t write(const char *buffer, size_t size) 
+size_t serial_write(const char *buffer, size_t size) 
 {
 	ASSERT(serial_io);
 
@@ -158,19 +158,19 @@ size_t write(const char *buffer, size_t size)
  #pragma region Print Functions
 
  
-size_t printf_(const char* format, ...)
+size_t serial_printf(const char* format, ...)
 {
 	#warning need to take modes into account
 	va_list ap;
 	va_start(ap, format);
-	size_t total_sent = vprintf_(format, ap);
+	size_t total_sent = serial_vprintf(format, ap);
 	va_end(ap);
 	return total_sent;
 }
   
   
   
-size_t vprintf_(const char* format, va_list ap)
+size_t serial_vprintf(const char* format, va_list ap)
 {
 	size_t strsize = 0;
 	size_t total_sent = 0;
@@ -187,33 +187,33 @@ size_t vprintf_(const char* format, va_list ap)
 	for(int i = 0; i < strsize; i += PRINT_FORMAT_BUFFER_SIZE)
 	{
 		total_sent += vsnprintf(format_buffer, block_size + 1, format + i, ap);
-		write(format_buffer, block_size);
+		serial_write(format_buffer, block_size);
 	}
 	
 	return total_sent;
 }
   
-size_t  print_str(const char* str)
+size_t  serial_print_str(const char* str)
 {
 	size_t s = strlen(str);
-	write(str, s);
+	serial_write(str, s);
 	return s;
 }
 
-size_t __attribute__((__always_inline__)) print_char(const char c)
+size_t __attribute__((__always_inline__)) serial_print_char(const char c)
 {
-	return write(&c, 1);
+	return serial_write(&c, 1);
 }
 
-size_t print_bool(const bool b)
+size_t serial_print_bool(const bool b)
 {
 	if(b)
 	{
-		return print_str("true");
+		return serial_print_str("true");
 	}
 	else
 	{
-		return print_str("false");
+		return serial_print_str("false");
 	}
 }
 
@@ -226,27 +226,27 @@ size_t print_bool(const bool b)
 char format_specifier_end[10] = {'c', 'd', 'e', 'f', 'i', 'o', 's', 'u', 'x', '%'};
 
 
-size_t printlnf_(const char* format, ...)
+size_t serial_printlnf(const char* format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
-	size_t total_sent = printf_(format, ap);
+	size_t total_sent = serial_printf(format, ap);
 	va_end(ap);
-	total_sent += println_();
+	total_sent += serial_println();
 	return total_sent;
 }
 
-size_t __attribute__((__always_inline__)) vprintlnf_(const char* str, va_list ap)
+size_t __attribute__((__always_inline__)) serial_vprintlnf(const char* str, va_list ap)
 {
-	size_t total_sent = vprintf_(str, ap);
-	total_sent += println_();
+	size_t total_sent = serial_vprintf(str, ap);
+	total_sent += serial_println();
 	return total_sent;
 }
 
 
-size_t println_()
+size_t serial_println()
 {
-	return print_str(NEWLINE);
+	return serial_print_str(NEWLINE);
 	//#if NEWLINE_CHAR == '\n'
 	//return print_char(NEWLINE_CHAR);
 	//#else
@@ -254,25 +254,25 @@ size_t println_()
 	//#endif
 }
 
-size_t println_str(const char* str)
+size_t serial_println_str(const char* str)
 {
 	size_t s = strlen(str);
-	write(str, s);
-	s += println_();
+	serial_write(str, s);
+	s += serial_println();
 	return s;
 }
 
-size_t __attribute__((__always_inline__)) println_char(const char c)
+size_t __attribute__((__always_inline__)) serial_println_char(const char c)
 {
-	size_t s = write_byte((uint8_t)c);
-	s += println_();
+	size_t s = serial_write_byte((uint8_t)c);
+	s += serial_println();
 	return s;
 }
 
-size_t __attribute__((__always_inline__)) println_bool(const bool b)
+size_t __attribute__((__always_inline__)) serial_println_bool(const bool b)
 {
-	size_t size = print_bool(b);
-	size += println_();
+	size_t size = serial_print_bool(b);
+	size += serial_println();
 	return size;
 }
 
@@ -283,30 +283,30 @@ size_t __attribute__((__always_inline__)) println_bool(const bool b)
 
 
 
-size_t printNumber(long n, uint8_t base)
+size_t serial_printNumber(long n, uint8_t base)
 {
 	if (base == 0) 
 	{
-		return write_byte(n);
+		return serial_write_byte(n);
 	} 
 	else if (base == 10) 
 	{
 		if (n < 0) 
 		{
-			int t = print_char((char)'-');
+			int t = serial_print_char((char)'-');
 			n = -n;
-			return printuNumber(n, 10) + t;
+			return serial_printuNumber(n, 10) + t;
 		}
-		return printuNumber(n, 10);
+		return serial_printuNumber(n, 10);
 	} 
 	else 
 	{
-		return printuNumber(n, base);
+		return serial_printuNumber(n, base);
 	}
 }
 
 
-size_t printuNumber(unsigned long n, uint8_t base)
+size_t serial_printuNumber(unsigned long n, uint8_t base)
 {
 	char buf[8 * sizeof(long) + 1]; // Assumes 8-bit chars plus zero byte.
 	char *str = &buf[sizeof(buf) - 1];
@@ -323,48 +323,48 @@ size_t printuNumber(unsigned long n, uint8_t base)
 		*--str = c < 10 ? c + '0' : c + 'A' - 10;
 	} while(n);
 
-	return print_str(str);
+	return serial_print_str(str);
 }
 
-size_t __attribute__((__always_inline__)) printlnNumber(long n, uint8_t base)
+size_t __attribute__((__always_inline__)) serial_printlnNumber(long n, uint8_t base)
 {
-	size_t size = printNumber(n, base);	
-	size += println_();
+	size_t size = serial_printNumber(n, base);	
+	size += serial_println();
 	return size;
 }
 
 
-size_t __attribute__((__always_inline__)) printlnuNumber(unsigned long n, uint8_t base)
+size_t __attribute__((__always_inline__)) serial_printlnuNumber(unsigned long n, uint8_t base)
 {
-	size_t size = printuNumber(n, base);
-	size += println_();
+	size_t size = serial_printuNumber(n, base);
+	size += serial_println();
 	return size;
 }
 
-size_t printNumberPad(long n, uint8_t base, uint8_t pad)
+size_t serial_printNumberPad(long n, uint8_t base, uint8_t pad)
 {
 	if (base == 0)
 	{
-		return write_byte(n);
+		return serial_write_byte(n);
 	}
 	else if (base == 10)
 	{
 		if (n < 0)
 		{
-			int t = print_char((char)'-');
+			int t = serial_print_char((char)'-');
 			n = -n;
-			return printuNumberPad(n, 10, pad) + t;
+			return serial_printuNumberPad(n, 10, pad) + t;
 		}
-		return printuNumberPad(n, 10, pad);
+		return serial_printuNumberPad(n, 10, pad);
 	}
 	else
 	{
-		return printuNumberPad(n, base, pad);
+		return serial_printuNumberPad(n, base, pad);
 	}
 }
 
 
-size_t printuNumberPad(unsigned long n, uint8_t base, uint8_t pad)
+size_t serial_printuNumberPad(unsigned long n, uint8_t base, uint8_t pad)
 {
 	char buf[8 * sizeof(long) + 1]; // Assumes 8-bit chars plus zero byte.
 	char *str = &buf[sizeof(buf) - 1];
@@ -385,36 +385,36 @@ size_t printuNumberPad(unsigned long n, uint8_t base, uint8_t pad)
 	return INTERNAL_PRINTF_FUNC(format, str);
 }
 
-size_t __attribute__((__always_inline__)) printlnNumberPad(long n, uint8_t base, uint8_t pad)
+size_t __attribute__((__always_inline__)) serial_printlnNumberPad(long n, uint8_t base, uint8_t pad)
 {
-	size_t size = printNumberPad(n, base, pad);
-	size += println_();
+	size_t size = serial_printNumberPad(n, base, pad);
+	size += serial_println();
 	return size;
 }
 
 
-size_t __attribute__((__always_inline__)) printlnuNumberPad(unsigned long n, uint8_t base, uint8_t pad)
+size_t __attribute__((__always_inline__)) serial_printlnuNumberPad(unsigned long n, uint8_t base, uint8_t pad)
 {
-	size_t size = printuNumberPad(n, base, pad);
-	size += println_();
+	size_t size = serial_printuNumberPad(n, base, pad);
+	size += serial_println();
 	return size;
 }
 
 
 
-size_t printFloat(double number, uint8_t digits)
+size_t serial_printFloat(double number, uint8_t digits)
 {
 	size_t n = 0;
 	
-	if (isnan(number)) return print_str("nan");
-	if (isinf(number)) return print_str("inf");
-	if (number > 4294967040.0) return print_str ("ovf");  // constant determined empirically
-	if (number <-4294967040.0) return print_str ("ovf");  // constant determined empirically
+	if (isnan(number)) return serial_print_str("nan");
+	if (isinf(number)) return serial_print_str("inf");
+	if (number > 4294967040.0) return serial_print_str ("ovf");  // constant determined empirically
+	if (number <-4294967040.0) return serial_print_str ("ovf");  // constant determined empirically
 	
 	// Handle negative numbers
 	if (number < 0.0)
 	{
-		n += print_char((char)'-');
+		n += serial_print_char((char)'-');
 		number = -number;
 	}
 
@@ -428,11 +428,11 @@ size_t printFloat(double number, uint8_t digits)
 	// Extract the integer part of the number and print it
 	unsigned long int_part = (unsigned long)number;
 	double remainder = number - (double)int_part;
-	n += printuNumber(int_part, 10);
+	n += serial_printuNumber(int_part, 10);
 
 	// Print the decimal point, but only if there are digits beyond
 	if (digits > 0) {
-		n += print_char((char)'.');
+		n += serial_print_char((char)'.');
 	}
 
 	// Extract digits from the remainder one at a time
@@ -440,17 +440,17 @@ size_t printFloat(double number, uint8_t digits)
 	{
 		remainder *= 10.0;
 		unsigned int toPrint = (unsigned int)(remainder);
-		n += printuNumber(toPrint, 10);
+		n += serial_printuNumber(toPrint, 10);
 		remainder -= toPrint;
 	}
 	
 	return n;
 }
 
-size_t __attribute__((__always_inline__)) printlnFloat(double number, uint8_t digits)
+size_t __attribute__((__always_inline__)) serial_printlnFloat(double number, uint8_t digits)
 {
-	size_t size = printFloat(number, digits);
-	size += println_();
+	size_t size = serial_printFloat(number, digits);
+	size += serial_println();
 	return size;
 }
 
@@ -458,12 +458,12 @@ size_t __attribute__((__always_inline__)) printlnFloat(double number, uint8_t di
 
 
 
-size_t __attribute__((__always_inline__)) print_data_base(const unsigned char *data, size_t input_length, uint8_t base)
+size_t __attribute__((__always_inline__)) serial_print_data_base(const unsigned char *data, size_t input_length, uint8_t base)
 {
-	return print_data_base_sep(data, input_length, base, '\0');
+	return serial_print_data_base_sep(data, input_length, base, '\0');
 }
 
-size_t print_data_base_sep(const unsigned char *data, size_t input_length, uint8_t base, char separator)
+size_t serial_print_data_base_sep(const unsigned char *data, size_t input_length, uint8_t base, char separator)
 {
 
 	switch(base)
@@ -474,7 +474,7 @@ size_t print_data_base_sep(const unsigned char *data, size_t input_length, uint8
 		case 16:
 		break;
 		case 64:
-		return print_data_base64_sep(data, input_length, separator );
+		return serial_print_data_base64_sep(data, input_length, separator );
 		default: 
 		return 0;
 	}
@@ -484,23 +484,23 @@ size_t print_data_base_sep(const unsigned char *data, size_t input_length, uint8
 	
 	for(int i = 0; i < input_length; i++)
 	{
-		total_sent += printuNumberPad(data[i], base, padding);
+		total_sent += serial_printuNumberPad(data[i], base, padding);
 		
 		if(separator != '\0')
 		{
-			total_sent += print_char(separator);
+			total_sent += serial_print_char(separator);
 		}
 	}
 	return total_sent;
 }
 
 
-size_t __attribute__((__always_inline__)) println_data_base(const unsigned char *data, size_t input_length, uint8_t base, uint8_t line_length )
+size_t __attribute__((__always_inline__)) serial_println_data_base(const unsigned char *data, size_t input_length, uint8_t base, uint8_t line_length )
 {
-	return println_data_base_sep(data, input_length, line_length, base, '\0');
+	return serial_println_data_base_sep(data, input_length, line_length, base, '\0');
 }
 
-size_t println_data_base_sep(const unsigned char *data, size_t input_length, uint8_t base, uint8_t line_length, char separator)
+size_t serial_println_data_base_sep(const unsigned char *data, size_t input_length, uint8_t base, uint8_t line_length, char separator)
 {
 	switch(base)
 	{
@@ -510,7 +510,7 @@ size_t println_data_base_sep(const unsigned char *data, size_t input_length, uin
 		case 16:
 		break;
 		case 64:
-		return println_data_base64_sep(data, input_length, line_length, separator );
+		return serial_println_data_base64_sep(data, input_length, line_length, separator );
 		default:
 		return 0;
 	}
@@ -527,15 +527,15 @@ size_t println_data_base_sep(const unsigned char *data, size_t input_length, uin
 		
 		for(int b = 0; b < current_line_length; b++)
 		{
-			total_sent += printuNumberPad(data[b + i], base, padding);
+			total_sent += serial_printuNumberPad(data[b + i], base, padding);
 			
 			if(separator != '\0')
 			{
-				total_sent += print_char(separator);
+				total_sent += serial_print_char(separator);
 			}
 		}
 		
-		total_sent += println_();
+		total_sent += serial_println();
 	}
 	
 	
@@ -543,7 +543,7 @@ size_t println_data_base_sep(const unsigned char *data, size_t input_length, uin
 }
 
 
-size_t print_data_base64_sep(const unsigned char *data, size_t input_length, char separator)
+size_t serial_print_data_base64_sep(const unsigned char *data, size_t input_length, char separator)
 {
 	
 	size_t total_sent = 0;
@@ -564,13 +564,13 @@ size_t print_data_base64_sep(const unsigned char *data, size_t input_length, cha
 			for(int i = 0; i < output_length; i += 4)
 			{
 				//Total sent should always be divisible by 4, as padding is added.
-				total_sent += write(encoded_data + i, 4);			
-				total_sent += print_char(separator);	
+				total_sent += serial_write(encoded_data + i, 4);			
+				total_sent += serial_print_char(separator);	
 			}
 		}
 		else
 		{
-			total_sent = write(encoded_data, output_length);		
+			total_sent = serial_write(encoded_data, output_length);		
 		}
 		
 		free(encoded_data);
@@ -579,12 +579,12 @@ size_t print_data_base64_sep(const unsigned char *data, size_t input_length, cha
 	return total_sent;
 }
 
-size_t __attribute__((__always_inline__)) print_data_base64(const unsigned char *data, size_t input_length)
+size_t __attribute__((__always_inline__)) serial_print_data_base64(const unsigned char *data, size_t input_length)
 {
-	return print_data_base64_sep(data, input_length, '\0');
+	return serial_print_data_base64_sep(data, input_length, '\0');
 }
 
-size_t println_data_base64_sep(const unsigned char *data, size_t input_length, uint8_t line_length, char separator)
+size_t serial_println_data_base64_sep(const unsigned char *data, size_t input_length, uint8_t line_length, char separator)
 {
 	size_t total_sent = 0;
 	
@@ -621,25 +621,25 @@ size_t println_data_base64_sep(const unsigned char *data, size_t input_length, u
 				for(int b = 0; b < line_length; b += 4)
 				{
 					//Total sent should always be divisible by 4, as padding is added.
-					total_sent += write(encoded_data + i + b, 4);
-					total_sent += print_char(separator);
+					total_sent += serial_write(encoded_data + i + b, 4);
+					total_sent += serial_print_char(separator);
 				}
 			}
 			else
 			{
-				total_sent += write(encoded_data + i, line_length);			
+				total_sent += serial_write(encoded_data + i, line_length);			
 			}
 		
-			total_sent += println_();			
+			total_sent += serial_println();			
 		}
 		free(encoded_data);		
 	}
 	return total_sent;
 }
 
-size_t __attribute__((__always_inline__)) println_data_base64(const unsigned char *data, size_t input_length, uint8_t line_length)
+size_t __attribute__((__always_inline__)) serial_println_data_base64(const unsigned char *data, size_t input_length, uint8_t line_length)
 {
-	return println_data_base64_sep(data, input_length, line_length, '\0');
+	return serial_println_data_base64_sep(data, input_length, line_length, '\0');
 }
 
 
@@ -652,7 +652,7 @@ size_t __attribute__((__always_inline__)) println_data_base64(const unsigned cha
 *	/Param	labels			Should a header be displayed
 *	/Param	print_text		Should the bytes be displayed as text on the far right column(s)
 */
-size_t print_data_hex_addr(const unsigned char *data, size_t input_length, uint8_t line_length, bool labels, bool print_text)
+size_t serial_print_data_hex_addr(const unsigned char *data, size_t input_length, uint8_t line_length, bool labels, bool print_text)
 {
 	
 	size_t total_sent = 0;
@@ -671,7 +671,7 @@ size_t print_data_hex_addr(const unsigned char *data, size_t input_length, uint8
 		
 		
 		//Add padding
-		total_sent +=  println_();
+		total_sent +=  serial_println();
 		
 		
 		
@@ -688,15 +688,15 @@ size_t print_data_hex_addr(const unsigned char *data, size_t input_length, uint8
 			total_sent += INTERNAL_PRINTF_FUNC("%02X", a);
 			
 			if(a != line_length - 1)
-			total_sent += print_char(' ');
+			total_sent += serial_print_char(' ');
 		}
 		
 		
 		//Label for decoded text.
-		total_sent += print_str("   ");
-		total_sent += println_str("Decoded Text");
+		total_sent += serial_print_str("   ");
+		total_sent += serial_println_str("Decoded Text");
 		
-		total_sent +=  println_();		
+		total_sent +=  serial_println();		
 		
 	}
 	
@@ -721,7 +721,7 @@ size_t print_data_hex_addr(const unsigned char *data, size_t input_length, uint8
 			//Print data as text
 			if(print_text)
 			{
-				total_sent += print_str("    ");
+				total_sent += serial_print_str("    ");
 				
 				//Make sure we aren't printing past the last index.
 				int current_line_length = input_length - (i + 1 - line_length);
@@ -733,25 +733,25 @@ size_t print_data_hex_addr(const unsigned char *data, size_t input_length, uint8
 				for(uint8_t s = (i+1) - current_line_length; s <= i; s++)
 				{
 					if(data[s] == 0 || data[s] == '\t')
-						total_sent += print_char('.');
+						total_sent += serial_print_char('.');
 					else
-						total_sent += print_char(data[s]);
+						total_sent += serial_print_char(data[s]);
 				}
 
 				
 			}
-			total_sent += println_();	
+			total_sent += serial_println();	
 		}
 		else
 		{
 			//Separate data with a space.
-			total_sent += print_char(' ');
+			total_sent += serial_print_char(' ');
 		}
 
 	}
 
 	//Add bottom padding.
-	total_sent +=  println_();
+	total_sent +=  serial_println();
 	
 	return total_sent;
 }

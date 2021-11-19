@@ -21,7 +21,7 @@
 *
 *	Serial_Available()
 */
-#define Serial_Available					reader_available
+#define Serial_Available					serial_available
 
 /*
 *	Returns the next byte (character) of incoming serial data without removing it from the internal serial buffer.
@@ -33,7 +33,7 @@
 *
 *	/returns	The first byte of incoming serial data available (or -1 if no data is available). Data type: int.
 */
-#define Serial_Peek							reader_peek
+#define Serial_Peek							serial_peek
 
 #endif
 
@@ -44,7 +44,7 @@
 *
 *	/returns	The first byte of incoming serial data available (or -1 if no data is available). Data type: int.
 */
-#define Serial_Read							reader_read
+#define Serial_Read							serial_read
 
 
 
@@ -90,7 +90,7 @@
 *
 *	/returns			int				Returns index of the target that is found first or -1 if timeout occurs.
 */
-#define Serial_FindMulti(targets, tCount)	reader_findMulti(target, tCount)
+#define Serial_FindMulti(targets, tCount)	serial_findMulti(target, tCount)
 
 /*
 *	Reads characters from the serial port into a buffer. 
@@ -128,7 +128,7 @@
 *
 *	/returns			string_t*			A pointer to a string.
 */
-#define Serial_ReadString					reader_readString	//READER_READSTRING_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+#define Serial_ReadString					serial_readString	//READER_READSTRING_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
 /*
 *	Reads characters from the serial buffer into a String. The function terminates if it times out (see setTimeout()).
@@ -139,7 +139,7 @@
 *
 *	/returns			string_t*			A pointer to a string, read from the serial buffer, up to the terminator character
 */
-#define Serial_ReadStringUntil(terminator)	reader_readStringUntil(terminator)	//READER_READSTRING_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+#define Serial_ReadStringUntil(terminator)	serial_readStringUntil(terminator)	//READER_READSTRING_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
 /*
 *	Looks for the next valid integer in the incoming serial. The function terminates if it times out (see Serial.setTimeout()).

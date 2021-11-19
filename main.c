@@ -70,11 +70,19 @@ bool receivedData;
 #include "Addio/Embedded/Time/timing/timing.h"
 
 char arr[64];
+char rxbuf[16];
 
 void tx_test1();
 void tx_test2();
 
 void rx_test1();
+
+void usart_rx_cb(const struct usart_async_descriptor *const descr)
+{
+	int count =serial_readBytes(rxbuf, 16);	
+		
+	Serial_Write(rxbuf, count);
+}
 
 int main(void)
 {
@@ -85,7 +93,12 @@ int main(void)
 	
 	cdc_stdio_init();
 	
+	
+	//usart_async_register_callback(&USART_EBDG, USART_ASYNC_RXC_CB, usart_rx_cb);
+	
 	usart_async_enable(&USART_EBDG);
+	
+
 	
 	Serial_Init(&USB_CDC_IO, USB_CDC_IO_PORT);
 	Serial_Init(&USART_EBDG, USART_QBUG_IO_PORT);
@@ -94,7 +107,7 @@ int main(void)
 	
 	system_timer_init();
 	
-	//usb_cdc_stdio_register_callback(USB_CDC_RX_DATA, (FUNC_PTR)DataReceived);
+	usb_cdc_stdio_register_callback(USB_CDC_RX_DATA, (FUNC_PTR)DataReceived);
 	
 	
 	while(!cdc_data_terminal_ready()){}
@@ -131,21 +144,21 @@ int main(void)
 	}
 }
 
-char rxbuf[16];
+
 
 void rx_test1()
 {
 	
-	//if(Serial_ActivePort() == USB_CDC_IO_PORT)
-	//Serial(USART_QBUG_IO_PORT);
-	//else
-	//Serial(USB_CDC_IO_PORT);
-	//
+	if(Serial_ActivePort() == USB_CDC_IO_PORT)
+	Serial(USART_QBUG_IO_PORT);
+	else
+	Serial(USB_CDC_IO_PORT);
 	
 	
-	if(Serial_Available())
+	
+	if(Serial_Available() || usart_async_is_rx_not_empty(&USART_EBDG))
 	{
-		int count = reader_readBytes(rxbuf, 16);	
+		int count =serial_readBytes((char*)rxbuf, 16);	
 		
 		Serial_Write(rxbuf, count);
 	}
@@ -258,10 +271,10 @@ void DataReceived(const uint16_t length)
 	
 	receivedData = true;
 	
-	uint32_t rxCount = io_read(&USB_CDC_IO, rx_buffer, USB_CDC_RX_BUF_SIZE);
-	
-	memcpy(tx_buffer, rx_buffer, rxCount);
-	
-	io_write(&USB_CDC_IO,tx_buffer, rxCount);
+	//uint32_t rxCount = io_read(&USB_CDC_IO, rx_buffer, USB_CDC_RX_BUF_SIZE);
+	//
+	//memcpy(tx_buffer, rx_buffer, rxCount);
+	//
+	//io_write(&USB_CDC_IO,tx_buffer, rxCount);
 
 }

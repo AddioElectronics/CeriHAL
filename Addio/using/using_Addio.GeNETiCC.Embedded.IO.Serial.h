@@ -11,7 +11,7 @@
 #include "../GeNETiCC/geneticc.h"
 #include "../GeNETiCC/Embedded/IO/serial/serial_geneticc.h"
 #include "../GeNETiCC/Embedded/IO/serial/print/print_geneticc.h"
-#include "../GeNETiCC/Embedded/IO/serial/reader/reader_geneticc.h"
+#include "../GeNETiCC/Embedded/IO/serial/reader/serial_geneticc.h"
 
 
 #else
