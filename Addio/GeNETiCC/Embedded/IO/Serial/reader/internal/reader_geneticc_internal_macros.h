@@ -1,9 +1,9 @@
 #ifndef READER_GENETICC_INTERNAL_MACROS_H_
 #define READER_GENETICC_INTERNAL_MACROS_H_
-#if __has_include( "../../../../../geneticc/geneticc_internal_macros.h")
+#if __has_include( "../../../../../preprocess/geneticc_internal_macros.h")
 
 #include "../../../../../../Embedded/IO/serial/reader/reader.h"
-#include "../../../../../geneticc/geneticc_internal_macros.h"
+#include "../../../../../preprocess/geneticc_internal_macros.h"
 
 
 #define REPEATER_MACRO_GENETICC_READER_FIND_POINTER(target, length) serial_find(target, length)
@@ -51,23 +51,37 @@ READER_READBYTES_1, )
 //READER_READSTRING_1,									\
 //READER_READSTRING_0, )
 
-#define READER_PARSEINT_3(lookahead, ignore)								serial_parseInt(lookahead, ignore)
-#define READER_PARSEINT_2(lookahead)										serial_parseInt(lookahead, NO_IGNORE_CHAR)
-#define READER_PARSEINT_1(DUMMY)											serial_parseInt(SKIP_ALL, NO_IGNORE_CHAR)
+static float dummy()
+{
+	return -1;
+}
+
+#define READER_PARSEINT_2(lookahead, ignore)								serial_parseInt(lookahead, ignore)
+#define READER_PARSEINT_1(lookahead)										serial_parseInt(lookahead, NO_IGNORE_CHAR)
+//#define READER_PARSEINT_1(DUMMY)											serial_parseInt(SKIP_ALL, NO_IGNORE_CHAR)
 #define READER_PARSEINT_MACRO_CHOOSER(...)				\
-GET_ARGUMENT_3(__VA_ARGS__,								\
-READER_PARSEINT_3,										\
+GET_ARGUMENT_2(__VA_ARGS__,								\
 READER_PARSEINT_2,										\
 READER_PARSEINT_1, )
 
-#define READER_PARSEFLOAT_3(lookahead, ignore)								serial_parseFloat(lookahead, ignore)
-#define READER_PARSEFLOAT_2(lookahead)										serial_parseFloat(lookahead, NO_IGNORE_CHAR)
-#define READER_PARSEFLOAT_1(DUMMY)											serial_parseFloat(SKIP_ALL, NO_IGNORE_CHAR)
+
+
+//#define READER_PARSEFLOAT_2(lookahead, ignore)								serial_parseFloat(lookahead, ignore)
+//#define READER_PARSEFLOAT_1(lookahead)										serial_parseFloat(lookahead, NO_IGNORE_CHAR)
+////#define READER_PARSEFLOAT_0													serial_parseFloat(SKIP_ALL, NO_IGNORE_CHAR)
+//#define READER_PARSEFLOAT_MACRO_CHOOSER(...)			\
+//GET_ARGUMENT_2(__VA_ARGS__,								\
+//READER_PARSEFLOAT_2,									\
+//READER_PARSEFLOAT_1, )
+
+#define READER_PARSEFLOAT_2(lookahead, ignore)								serial_parseFloat(lookahead, ignore)
+#define READER_PARSEFLOAT_1(lookahead)										serial_parseFloat(lookahead, NO_IGNORE_CHAR)
+/*#define READER_PARSEFLOAT_0()												serial_parseFloat(SKIP_ALL, NO_IGNORE_CHAR)*/
 #define READER_PARSEFLOAT_MACRO_CHOOSER(...)			\
-GET_ARGUMENT_3(__VA_ARGS__,								\
-READER_PARSEFLOAT_3,									\
+GET_ARGUMENT_2(__VA_ARGS__,								\
 READER_PARSEFLOAT_2,									\
-READER_PARSEFLOAT_1, )
+READER_PARSEFLOAT_1, )									
+//READER_PARSEFLOAT_0, )
 
 
 #endif

@@ -18,54 +18,123 @@
 #if __has_include("../../../../../Embedded/io/serial/addio_io.h")
 #define AvailableForWrite serial_availableForWrite(false)
 #endif
+
 /*
-*	Macro used to "overload" print functions, without formatting.
+*	Writes virtually any standard data type to the active IO descriptor.
 *
+*	Print(char)
+*	Print(char*)
+*	Print(int)
+*   .
+*   .
+*   .
+*	Print(float)
+*	Print(bool)
+*
+*	***Types***
 *	int/short/long	: Displayed in base 10. To customize the number base, use Printf instead.
 *	float/double	: Displays 2 decimal digits. To customize digit count use Printf instead.
 *
-*	Note : Unlike printf, char* are sent one message at a time (unless message is larger than buffer).
+*	/param		x			Any standard data type.
+*
+*	/returns	size_t		The amount of bytes that were successfully written.
 */
 #define Print(x) INTERNAL_PRINT(x)
 
 /*
-*	Macro used to "overload" print functions, with formatting.
-*	Formatting applied for char pointers, and numbers(int...float).
+*	Writes virtually any standard data type to the active IO descriptor,
+*	with additional formatting arguments.
 *
-*	***Arguments***
-*	char*			: Treated exactly like printf, can take an "infinite" amount of arguments
-*	char			: Takes 0 variadic arguments.
-*	int/short/long	: Takes 1 variadic argument, the base you want displayed.
-*	float/double	: Takes 1 variadic argument, the number of decimal digits you want displayed.
+*	Print(char)
+*	Print(const unsigned char)
+*	Print(const signed char)
+*	Print(char*)
+*	Print(char*, ...)
+*	Print(unsigned char, base)
+*	Print(signed char, base)
+*	Print(int, base)
+*   .
+*   .
+*   .
+*	Print(float, decimalDigits)
+*	Print(bool)
 *
-*	Note : Unlike printf, char* are sent one message at a time (unless message is larger than buffer).
+*	***Types***
+*	char*				: Treated exactly like printf, can take an "infinite" amount of arguments
+*	char				: Takes 0 variadic arguments.
+*	const char(s/u)		: Takes 0 variadic arguments.
+*	char(s/u)			: Takes 1 variadic argument, the base you want displayed.
+*	int/short/long		: Takes 1 variadic argument, the base you want displayed.
+*	float/double		: Takes 1 variadic argument, the number of decimal digits you want displayed.
+*
+*	/param		x			Any standard data type.
+*	/param		...			Formatting arguments, dependant on the type of x.
+*
+*	/returns	size_t		The amount of bytes that were successfully written.
 */
 #define Printf(x, ...) INTERNAL_PRINTF(x, ##__VA_ARGS__)
 
+
 /*
-*	Macro used to "overload" println functions, without formatting.
-*	Writes \r\n after each message.
+*	Prints the data from a string_t's buffer.
 *
-*	int/short/long	: Displayed in base 10. To customize the number base, use Printfln instead.
-*	float/double	: Displays 2 decimal digits. To customize digit count use Printfln instead.
+*	PrintString(cstring)
 *
-*	Note : Unlike printf, char* are sent one message at a time (unless message is larger than buffer).
+*	/param		string_t
+*
+*	/returns	size_t		The amount of bytes that were successfully written.
+*/
+#define PrintString(cstring)	serial_print_string(ctring)
+
+/*
+*	Writes virtually any standard data type to the active IO descriptor,
+*	ending with a newline character.
+*
+*	Print(char)
+*	Print(char*)
+*	Print(int)
+*   .
+*   .
+*   .
+*	Print(float)
+*	Print(bool)
+*
+*	int/short/long	: Displayed in base 10. To customize the number base, use Printf instead.
+*	float/double	: Displays 2 decimal digits. To customize digit count use Printf instead.
+*
+*	/param		x			Any standard data type.
+*
+*	/returns	size_t		The amount of bytes that were successfully written.
 */
 #define Println(x) INTERNAL_PRINTLN(x)
 
 /*
-*	Macro used to "overload" println functions, with formatting.
-*	Formatting applied for char pointers, and numbers(int...float).
+*	Writes virtually any standard data type to the active IO descriptor,
+*	with additional formatting arguments, and ending with a newline character.
 *
-*	***Arguments***
+*	***Types***
 *	char*			: Treated exactly like printf, can take an "infinite" amount of arguments
 *	char			: Takes 0 variadic arguments.
 *	int/short/long	: Takes 1 variadic argument, the base you want displayed.
 *	float/double	: Takes 1 variadic argument, the number of decimal digits you want displayed.
 *
-*	Note : Unlike printf, char* are sent one message at a time (unless message is larger than buffer).
+*	/param		x			Any standard data type.
+*	/param		...			Formatting arguments, dependant on the type of x.
+*
+*	/returns	size_t		The amount of bytes that were successfully written.
 */
 #define Printfln(x, ...) INTERNAL_PRINTFLN(x, ##__VA_ARGS__)
+
+/*
+*	Prints the data from a string_t's buffer, ending with a newline character.
+*
+*	PrintlnString(cstring)
+*
+*	/param		string_t
+*
+*	/returns	size_t		The amount of bytes that were successfully written.
+*/
+#define PrintlnString(cstring)	serial_print_string(cstring)
 
 #pragma endregion Arduino Like Macros
 
@@ -95,7 +164,7 @@
 *	/param	*data				Pointer to starting memory address.
 *	/param	input_length		The amount of characters to display.
 *	/param	base				(Default = 16)The base to display each byte as.
-*	/param	separator			(Default = '\0')The character used to separate each byte.
+*	/param	separator			(Default = 0)The character used to separate each byte. If 0 nothing will separate the characters.
 *
 *	/returns	size_t			How many bytes were transmitted.
 */
@@ -108,8 +177,9 @@
 *
 *	/param	*data				Pointer to starting memory address.
 *	/param	input_length		The amount of characters to display.
+*	/param	line_length			(Default = 32)The amount of characters displayed on each line.
 *	/param	base				(Default = 16)The base to display each byte as.
-*	/param	separator			(Default = '\0')The character used to separate each byte.
+*	/param	separator			(Default = 0)The character used to separate each byte. If 0 nothing will separate the characters.
 *
 *	/returns	size_t			How many bytes were transmitted.
 */

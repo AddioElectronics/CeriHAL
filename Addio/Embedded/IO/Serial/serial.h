@@ -26,7 +26,7 @@
 
 
 void serial_init(struct io_descriptor* io_descr, uint8_t port_num);
-void serial_set_port(uint8_t port_num);
+void serial_set_port(uint8_t port_id);
 int8_t serial_set_port_io_descr(struct io_descriptor* io_desc);
 int8_t serial_get_active_port_id();
 struct io_descriptor* serial_get_active_port_io_desc();

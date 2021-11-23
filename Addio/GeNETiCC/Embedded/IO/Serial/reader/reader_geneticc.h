@@ -35,6 +35,17 @@
 */
 #define Serial_Peek							serial_peek
 
+/*
+*	Clears the RX buffer.
+*
+*	*Warning : Not all I/O descriptors are capable of flushing. It is up to you to figure out what libraries are compatible. (ex. hal usart async is compatible, where hal usart sync is not)
+*
+*	Serial_FlushRx()
+*
+*	/returns	The amount of bytes flushed from the buffer.
+*/
+#define Serial_FlushRx						serial_flushRx
+
 #endif
 
 /*
@@ -104,7 +115,7 @@
 *
 *	/returns			int				The number of bytes placed in the buffer.
 */
-#define Serial_ReadBytes(...)				READER_READBYTES_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+#define Serial_ReadBytes(...)			READER_READBYTES_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
 /*
 *	Reads characters from the serial port into a buffer.
@@ -119,10 +130,13 @@
 *
 *	/returns			int				The number of characters read into the buffer. A 0 means that the length parameter <= 0, a time out occurred before any other input, or a termination character was found before any other input.
 */
-#define Serial_ReadBytesUntil(...)			READER_READBYTESUNTIL_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+#define Serial_ReadBytesUntil(...)		READER_READBYTESUNTIL_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
 /*
 *	Reads characters from the serial buffer into a String. The function terminates if it times out (see setTimeout()).
+*
+*	*Warning :	This function allocates memory which must be freed when you are finished using it.
+*				Use cstring_delete(string_t* string) to free.
 *
 *	Serial_ReadString()
 *
@@ -132,6 +146,9 @@
 
 /*
 *	Reads characters from the serial buffer into a String. The function terminates if it times out (see setTimeout()).
+*
+*	*Warning :	This function allocates memory which must be freed when you are finished using it.
+*				Use cstring_delete(string_t* string) to free.
 *
 *	Serial_ReadString(terminator)
 *
@@ -147,15 +164,40 @@
 *	*Warning : This macro uses "peek." Not all I/O descriptors are capable of peeking. It is up to you to figure out what libraries are compatible. (ex. hal usart async is compatible, where hal usart sync is not)
 *
 *	Serial_ParseInt()
-*	Serial_ParseInt(lookahead)
-*	Serial_ParseInt(lookahead, ignore)
+*
+*	/returns			long				The next valid integer.
+*/
+#define Serial_ParseInt()					serial_parseInt(SKIP_ALL, NO_IGNORE_CHAR)
+
+/*
+*	Looks for the next valid integer in the incoming serial. The function terminates if it times out (see Serial.setTimeout()).
+*
+*	*Warning : This macro uses "peek." Not all I/O descriptors are capable of peeking. It is up to you to figure out what libraries are compatible. (ex. hal usart async is compatible, where hal usart sync is not)
+*
+*	Serial_ParseIntExt(lookahead)
+*	Serial_ParseIntExt(lookahead, ignore)
 *
 *	/param	lookahead	LookaheadMode		(Optional)The mode used to look ahead in the stream for an integer.										Default = SKIP_ALL
 *	/param	ignore		char				(Optional)Used to skip the indicated char in the search. Used for example to skip thousands divider.	Default = '\x01'
 *
 *	/returns			long				The next valid integer.
 */
-#define Serial_ParseInt(...)				READER_PARSEINT_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+#define Serial_ParseIntExt(...)				READER_PARSEINT_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+
+
+
+/*
+*	Returns the first valid floating point number from the Serial buffer.
+*	parseFloat() is terminated by the first character that is not a floating point number.
+*	The function terminates if it times out (see Serial.setTimeout()).
+*
+*	*Warning : This macro uses "peek." Not all I/O descriptors are capable of peeking. It is up to you to figure out what libraries are compatible. (ex. hal usart async is compatible, where hal usart sync is not)
+*
+*	Serial_ParseFloat()
+*
+*	/returns			float				The next valid floating point.
+*/
+#define Serial_ParseFloat()					serial_parseFloat(SKIP_ALL, NO_IGNORE_CHAR)
 
 /*
 *	Returns the first valid floating point number from the Serial buffer. 
@@ -164,16 +206,17 @@
 *
 *	*Warning : This macro uses "peek." Not all I/O descriptors are capable of peeking. It is up to you to figure out what libraries are compatible. (ex. hal usart async is compatible, where hal usart sync is not)
 *
-*	Serial_ParseFloat()
-*	Serial_ParseFloat(lookahead)
-*	Serial_ParseFloat(lookahead, ignore)
+*	Serial_ParseFloatExt(lookahead)
+*	Serial_ParseFloatExt(lookahead, ignore)
 *
 *	/param	lookahead	LookaheadMode		(Optional)The mode used to look ahead in the stream for an integer.										Default = SKIP_ALL
 *	/param	ignore		char				(Optional)Used to skip the indicated char in the search. Used for example to skip thousands divider.	Default = '\x01'
 *
 *	/returns			float				The next valid floating point.
 */
-#define Serial_ParseFloat(...)				READER_PARSEFLOAT_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+#define Serial_ParseFloatExt(...)			READER_PARSEFLOAT_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+
+
 
 #else
 #error Missing Library

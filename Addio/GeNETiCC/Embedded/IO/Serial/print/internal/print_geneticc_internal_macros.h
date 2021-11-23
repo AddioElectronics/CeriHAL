@@ -170,9 +170,9 @@ SERIAL_WRITE_1, )
 #define INTERNAL_PRINT_DATA_BASE(data, length, base, separator) \
 serial_print_data_base_sep(data, length, base, separator);
 
-#define INTERNAL_PRINT_DATA_BASE_4(data, length, base, separator)	INTERNAL_PRINT_DATA_BASE(data, length, base, separator)
-#define INTERNAL_PRINT_DATA_BASE_3(data, length, base)				INTERNAL_PRINT_DATA_BASE(data, length, base, '\0')
-#define INTERNAL_PRINT_DATA_BASE_2(data, length)					INTERNAL_PRINT_DATA_BASE(data, length, 16, '\0')
+#define INTERNAL_PRINT_DATA_BASE_4(data, length, base, separator)				INTERNAL_PRINT_DATA_BASE(data, length, base, separator)
+#define INTERNAL_PRINT_DATA_BASE_3(data, length, base)							INTERNAL_PRINT_DATA_BASE(data, length, base, '\0')
+#define INTERNAL_PRINT_DATA_BASE_2(data, length)								INTERNAL_PRINT_DATA_BASE(data, length, 16, '\0')
 #define INTERNAL_PRINT_DATA_BASE_MACRO_CHOOSER(...)			\
 GET_ARGUMENT_4(__VA_ARGS__,									\
 INTERNAL_PRINT_DATA_BASE_4,									\
@@ -180,24 +180,27 @@ INTERNAL_PRINT_DATA_BASE_3,									\
 INTERNAL_PRINT_DATA_BASE_2, )
 
 /*
-*	Prints an array of bytes in the specified base, ending with a new line character.
+*	Prints an array of bytes in the specified base, as multiple lines.
 *
 *	/param	*data				Pointer to starting memory address.
 *	/param	length				The amount of characters to display.
+*	/param	line_length			(Default = 32)The amount of characters displayed on each line.
 *	/param	base				(Default = 16)The base to display each byte as.
 *	/param	separator			(Default = '\0')The character used to separate each byte.
 *
 *	/returns	size_t			How many bytes were transmitted.
 */
-#define INTERNAL_PRINTLN_DATA_BASE(data, length, base, separator) \
-serial_println_data_base_sep(data, length, base, separator);
+#define INTERNAL_PRINTLN_DATA_BASE(data, length, line_length, base, separator) \
+serial_println_data_base_sep(data, length, base, line_length, separator);
 
-#define INTERNAL_PRINTLN_DATA_BASE_4(data, length, base, separator)	INTERNAL_PRINTLN_DATA_BASE(data, length, base, separator)
-#define INTERNAL_PRINTLN_DATA_BASE_3(data, length, base)			INTERNAL_PRINTLN_DATA_BASE(data, length, base, '\0')
-#define INTERNAL_PRINTLN_DATA_BASE_2(data, length)					INTERNAL_PRINTLN_DATA_BASE(data, length, 16, '\0')
-#define INTERNAL_PRINTLN_DATA_BASE_1(data)							INTERNAL_PRINTLN_DATA_BASE(data, sizeof(data), 16, '\0')
+#define INTERNAL_PRINTLN_DATA_BASE_5(data, length, line_length, base, separator)	INTERNAL_PRINTLN_DATA_BASE(data, length, line_length, base, separator)
+#define INTERNAL_PRINTLN_DATA_BASE_4(data, length, line_length, base)				INTERNAL_PRINTLN_DATA_BASE(data, length, line_length, base, '\0')
+#define INTERNAL_PRINTLN_DATA_BASE_3(data, length, line_length)						INTERNAL_PRINTLN_DATA_BASE(data, length, line_length, base, '\0')
+#define INTERNAL_PRINTLN_DATA_BASE_2(data, length)									INTERNAL_PRINTLN_DATA_BASE(data, length, 32, 16, '\0')
+#define INTERNAL_PRINTLN_DATA_BASE_1(data)											INTERNAL_PRINTLN_DATA_BASE(data, sizeof(data), 32, 16, '\0')
 #define INTERNAL_PRINTLN_DATA_BASE_MACRO_CHOOSER(...)			\
-GET_ARGUMENT_4(__VA_ARGS__,										\
+GET_ARGUMENT_5(__VA_ARGS__,										\
+INTERNAL_PRINTLN_DATA_BASE_5,									\
 INTERNAL_PRINTLN_DATA_BASE_4,									\
 INTERNAL_PRINTLN_DATA_BASE_3,									\
 INTERNAL_PRINTLN_DATA_BASE_2,									\
@@ -218,8 +221,8 @@ INTERNAL_PRINTLN_DATA_BASE_1, )
 #define INTERNAL_PRINTLN_DATA_HEX_EDITOR(data, length, line_length, labels, print_text) \
 serial_print_data_hex_addr(data, length, line_length, labels, print_text);
 
-#define INTERNAL_PRINTLN_DATA_HEX_EDITOR_5(data, length, line_length, labels, print_text)	INTERNAL_PRINTLN_DATA_HEX_EDITOR(data, length, line_length, separator)
-#define INTERNAL_PRINTLN_DATA_HEX_EDITOR_4(data, length, line_length, labels)				INTERNAL_PRINTLN_DATA_HEX_EDITOR(data, length, line_length, separator)
+#define INTERNAL_PRINTLN_DATA_HEX_EDITOR_5(data, length, line_length, labels, print_text)	INTERNAL_PRINTLN_DATA_HEX_EDITOR(data, length, line_length, labels, print_text)
+#define INTERNAL_PRINTLN_DATA_HEX_EDITOR_4(data, length, line_length, labels)				INTERNAL_PRINTLN_DATA_HEX_EDITOR(data, length, line_length, labels)
 #define INTERNAL_PRINTLN_DATA_HEX_EDITOR_3(data, length, line_length)						INTERNAL_PRINTLN_DATA_HEX_EDITOR(data, length, line_length, true, true)
 #define INTERNAL_PRINTLN_DATA_HEX_EDITOR_2(data, length)									INTERNAL_PRINTLN_DATA_HEX_EDITOR(data, length, 16, true, true)
 #define INTERNAL_PRINTLN_DATA_HEX_EDITOR_1(data)											INTERNAL_PRINTLN_DATA_HEX_EDITOR(data, sizeof(data),  16, true, true)

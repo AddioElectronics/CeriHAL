@@ -79,6 +79,15 @@ int32_t stdio_io_rxReady();
  */
 int32_t stdio_io_txReady();
 
+/**
+ * \brief I/O get interface
+ *
+ * This function will clear the RX buffer, if using a buffered system.
+ *
+ * /return A count of how many bytes were flushed from the buffer.
+ */
+int32_t stdio_io_flushRx();
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

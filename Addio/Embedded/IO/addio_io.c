@@ -4,14 +4,7 @@
 
 #include "../Time/Timing/timing.h"
 
-/*
-*	Use functions that check the io_descriptor control flags,
-*	and perform the corresponding checks.
-*
-*	*Without the additional verifications, the data may be sent too fast, and result in lost data.
-*	*Certain libraries do not require this, such as hal_usart_sync, where its sibling hal_usart_async does.
-*/
-#define USE_ADDITIONAL_VERIFICATION true
+
 
 //If the Addio Serial component is available, use its timeout.
 #if __has_include("Serial/serial_config.h")
@@ -25,7 +18,7 @@ extern unsigned long serial_timeout;
 
 unsigned long previous_write_timestamp;
 
-#if USE_ADDITIONAL_VERIFICATION
+#if ADDIO_IO_USE_ADDITIONAL_VERIFICATION
 
 /**
  * \brief I/O write interface
@@ -36,7 +29,7 @@ int32_t io_write(struct io_descriptor *const io_descr, const uint8_t* buf, const
 	
 	ASSERT(io_descr && buf);
 	
-	
+	//Check to see if the previous write has finished.
 	if(io_descr->flags.tx_check_previous_for_completion)
 	{
 		start_time = millis();
@@ -55,9 +48,14 @@ int32_t io_write(struct io_descriptor *const io_descr, const uint8_t* buf, const
 		while(micros() - previous_write_timestamp < io_descr->flags.tx_min_interval){}
 	}
 		
+	//Send the data to the current IO descriptor.
 	int32_t result = io_descr->write(io_descr, buf, length);
+	
+	//Mark timestamp for previous write.
+	if(io_descr->flags.tx_min_interval > 0)
 	previous_write_timestamp = micros();
 	
+	//Wait for the write to finish sending.
 	if(io_descr->flags.tx_wait_for_complete)
 	{
 		start_time = millis();
@@ -202,4 +200,14 @@ int32_t io_txReady(struct io_descriptor *const io_descr)
 {
 	ASSERT(io_descr);
 	return io_descr->txReady(io_descr);
+}
+
+
+/**
+ * \brief I/O flushRx interface
+ */
+int32_t io_flushRx(struct io_descriptor *const io_descr)
+{
+	ASSERT(io_descr);
+	return io_descr->flushRx(io_descr);
 }

@@ -147,6 +147,14 @@ int __attribute__((__always_inline__)) serial_peek()
 	#endif
 }
 
+int serial_flushRx()
+{
+	ASSERT(serial_io->flushRx);
+	//if(serial_io->flushRx == NULL) return -1;
+	
+	serial_io->flushRx(serial_io);
+}
+
 
 // reads data from the stream until the target string of given length is found
 // returns true if target string is found, false if timed out
@@ -279,6 +287,7 @@ size_t serial_readBytesUntil(char terminator, char *buffer, size_t length)
 	return index; // return number of characters, not including null terminator
 }
 
+//Warning : string_t must be freed when done using "cstring_delete(string_t* string)."
 string_t* __attribute__((__always_inline__)) serial_readString()
 {
 	return serial_readStringUntil(-1);
@@ -292,9 +301,10 @@ string_t* __attribute__((__always_inline__)) serial_readString()
 	//return ret;
 }
 
+//Warning : string_t must be freed when done using "cstring_delete(string_t* string)."
 string_t* serial_readStringUntil(char terminator)
 {
-	string_t* ret = new_cstring(16);
+	string_t* ret = new_string(16);
 	int c = serial_timedRead();
 	while (c >= 0 && c != terminator)
 	{

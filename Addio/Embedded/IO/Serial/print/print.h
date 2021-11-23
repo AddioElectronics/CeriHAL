@@ -14,6 +14,8 @@
 
 #include "print_config.h"
 
+#include "../../../../Universal/Standard/Cstring/cstring.h"
+
 
 #pragma region Functions
 
@@ -27,20 +29,26 @@ size_t serial_write(const char *buffer, size_t size);
 size_t serial_printf(const char* format, ...);
 size_t serial_vprintf(const char* format, va_list ap);
 size_t serial_print_str(const char* str);
+inline size_t serial_print_string(string_t* string);
 inline size_t serial_print_char(const char c);
 size_t serial_print_bool(const bool b);
+
+
 
 inline size_t serial_print_data_base(const unsigned char *data, size_t input_length, uint8_t base);
 size_t serial_print_data_base_sep(const unsigned char *data, size_t input_length, uint8_t base, char separator);
 size_t serial_print_data_base64(const unsigned char *data, size_t input_length);
 size_t serial_print_data_base64_sep(const unsigned char *data, size_t input_length, char separator);
 
-size_t serial_println(void);
+inline size_t serial_println(void);
 size_t serial_printlnf(const char* format, ...);
-inline size_t serial_vprintlnf(const char* format, va_list ap);
+size_t serial_vprintlnf(const char* format, va_list ap);
 size_t serial_println_str(const char* str);
-inline size_t serial_println_char(const char c);
-inline size_t serial_println_bool(const bool b);
+size_t serial_println_string(string_t* string);
+size_t serial_println_char(const char c);
+size_t serial_println_bool(const bool b);
+
+
 
 inline size_t serial_println_data_base(const unsigned char *data, size_t input_length, uint8_t base, uint8_t line_length);
 size_t serial_println_data_base_sep(const unsigned char *data, size_t input_length, uint8_t base, uint8_t line_length, char separator);

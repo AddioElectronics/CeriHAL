@@ -2,7 +2,7 @@
 *	Extending hal_io.h designed for "stream" buffers.
 */
 
-#warning If you are using this with regulat Atmel Start libraries, you will need to create the missing functions, (get, peek, peekMany, rxLength, txCapacity) \
+#warning If you are using this with regular Atmel Start libraries, you will need to create the missing functions, (get, peek, peekMany, rxLength, txCapacity) \
 if you use functions that make use of them \
 example in addio/embedded/io/hal_io_extension/usart_async.
 
@@ -15,6 +15,15 @@ example in addio/embedded/io/hal_io_extension/usart_async.
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/*
+*	Use functions that check the io_descriptor control flags,
+*	and perform the corresponding checks.
+*
+*	*Without the additional verifications, the data may be sent too fast, and result in lost data.
+*	*Certain libraries do not require this, such as hal_usart_sync, where its sibling hal_usart_async does.
+*/
+#define ADDIO_IO_USE_ADDITIONAL_VERIFICATION true
 
 typedef union{
 	struct{
@@ -67,6 +76,11 @@ typedef int32_t (*io_rxReady_t)(struct io_descriptor *const io_descr);
 typedef int32_t (*io_txReady_t)(struct io_descriptor *const io_descr);
 
 /**
+ * \brief I/O read function pointer type
+ */
+typedef int32_t (*io_flushRx_t)(struct io_descriptor *const io_descr);
+
+/**
  * \brief I/O descriptor
  */
 struct io_descriptor {
@@ -76,6 +90,7 @@ struct io_descriptor {
 	io_peekMany_t peekMany;			//Optional
 	io_rxReady_t rxReady;
 	io_txReady_t txReady;			//Optional, if the io_write_t function handles it internally.
+	io_flushRx_t flushRx;			//Optional, if using a buffered system.
 	addio_io_control_t flags;
 };
 
@@ -176,6 +191,17 @@ int32_t io_rxReady(struct io_descriptor *const io_descr);
  * /return True or false depending on if the I/O descriptor is ready to write, or how many empty bytes are in the buffer.
  */
 int32_t io_txReady(struct io_descriptor *const io_descr);
+
+/**
+ * \brief I/O get interface
+ *
+ * This function will clear the RX buffer, if using a buffered system.
+ *
+ * \param[in] descr  An I/O descriptor to get information from.
+ *
+ * /return A count of how many bytes were flushed from the buffer.
+ */
+int32_t io_flushRx(struct io_descriptor *const io_descr);
 
 #ifdef __cplusplus
 }

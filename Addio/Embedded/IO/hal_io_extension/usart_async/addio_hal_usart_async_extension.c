@@ -10,11 +10,13 @@ static int32_t usart_async_peek(struct io_descriptor *const io_descr);
 static int32_t usart_async_peekMany(struct io_descriptor *const io_descr, const uint8_t* buf, const uint16_t length);
 static int32_t usart_async_rxReady(struct io_descriptor *const io_descr);
 static int32_t usart_async_txReady(struct io_descriptor *const io_descr);
+static int32_t usart_async_flushRx(struct io_descriptor *const io_descr);
 
 static void usart_tx_complete_cb(const struct usart_async_descriptor *const descr);
 
 //char* buffer[16];
 
+void usart_rx_dummy_cb(const struct usart_async_descriptor *const descr);
 /**
  * \brief Extend usart interface
  */
@@ -24,6 +26,7 @@ int32_t addio_usart_async_extend(struct usart_async_descriptor *const descr)
 	descr->io.peekMany = usart_async_peekMany;
 	descr->io.rxReady = usart_async_rxReady;
 	descr->io.txReady = usart_async_txReady;
+	descr->io.flushRx = usart_async_flushRx;
 	
 	/*
 	*	Recommended to either enable both tx_wait_for_complete and tx_check_previous_for_completion,
@@ -39,6 +42,11 @@ int32_t addio_usart_async_extend(struct usart_async_descriptor *const descr)
 	descr->io.flags.tx_check_previous_for_completion = true;
 	descr->io.flags.tx_min_interval = 2000;	//2ms
 	descr->io.flags.print_quick = false;
+	
+	
+	//Register dummy callback. Without it the HAL driver never seems to populate the buffer.
+	usart_async_register_callback(descr, USART_ASYNC_RXC_CB, usart_rx_dummy_cb);
+	
 	return ERR_NONE;
 }
 
@@ -80,5 +88,21 @@ static int32_t usart_async_txReady(struct io_descriptor *const io_descr)
 	return usart_async_is_tx_empty(descr);
 }
 
+static int32_t usart_async_flushRx(struct io_descriptor *const io_descr)
+{
+	struct usart_async_descriptor *descr = CONTAINER_OF(io_descr, struct usart_async_descriptor, io);
+
+	ASSERT(descr);
+	
+	int32_t count = ringbuffer_num(&descr->rx);
+	ringbuffer_flush(&descr->rx);
+	return count;
+}
+
+
+void usart_rx_dummy_cb(const struct usart_async_descriptor *const descr)
+{
+	
+}
 
 #endif

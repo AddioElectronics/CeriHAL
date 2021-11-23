@@ -21,6 +21,7 @@
 #if __has_include("../../addio_io.h")
 int serial_peek();
 int serial_available();
+int serial_flushRx();
 #else
 #warning Unsupported
 #endif

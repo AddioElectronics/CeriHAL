@@ -21,6 +21,7 @@ extern struct io_descriptor* serial_io;
 #error unsupported
 #endif
 
+extern const char* whitespace_characters;
 
 /*
 *	What printf function should the internal functions use?
@@ -47,112 +48,34 @@ size_t serial_availableForWrite()
 }
 #endif
 
-unsigned long previous_write_timestamp;
-
 size_t serial_write_byte(uint8_t b)
 {
 	ASSERT(serial_io);
 
-	//unsigned long start_millis;
-//
-	//if(serial_io->flags.tx_check_previous_for_completion)
-	//{
-		//if(serial_io->txReady != NULL)
-		//{
-			//start_millis = millis();
-			////If txReady is not null,
-			////the "io_descriptor->write" function does not wait internally,
-			////data will be overwritten if we do not wait.
-			////If that is not the case, someone didn't do their job.
-			//while(!serial_io->txReady(serial_io))
-			//{
-				//if(check_timeout(serial_timeout, start_millis))
-				//{
-					//return 0;
-				//}
-			//}
-		//}
-	//}
-	
+	#if ADDIO_IO_USE_ADDITIONAL_VERIFICATION == true
+	//Skips the additional verification.
+	//If ADDIO_IO_USE_ADDITIONAL_VERIFICATION == false,
+	//there is no need to skip.
 	if(serial_io->flags.print_quick)
-	return serial_io->write(serial_io, (&b), 1);
+	return serial_io->write(serial_io, &b, 1);	
+	#endif
 	 
-	 size_t succesful = io_write(serial_io, (&b), 1);
-	 //last_write = millis();
-
-	//if(serial_io->flags.tx_wait_for_complete)
-	//{
-		//if(serial_io->txReady != NULL)
-		//{
-			//start_millis = millis();
-			////This "io_descriptor->write" function does not wait internally,
-			////data will be overwritten if we do not wait.
-			//while(!serial_io->txReady(serial_io))
-			//{
-				//if(check_timeout(serial_timeout, start_millis))
-				//{
-					////Timed out
-					//return 0;
-				//}
-			//}
-		//}
-	//}
-	
-	return succesful;
-	 
+	return io_write(serial_io, &b, 1);	
 }
 
 size_t serial_write(const char *buffer, size_t size) 
 {
 	ASSERT(serial_io);
-
-	//unsigned long start_millis;
-//
-	//if(serial_io->flags.tx_check_previous_for_completion)
-	//{
-		//if(serial_io->txReady != NULL)
-		//{
-			//start_millis = millis();
-			////If txReady is not null,
-			////the "io_descriptor->write" function does not wait internally,
-			////data will be overwritten if we do not wait.
-			////If that is not the case, someone didn't do their job.
-			//while(!serial_io->txReady(serial_io))
-			//{
-				//if(check_timeout(serial_timeout, start_millis))
-				//{
-					//return 0;
-				//}
-			//}
-		//}
-	//}
 	
+	#if ADDIO_IO_USE_ADDITIONAL_VERIFICATION == true
+	//Skips the additional verification.
+	//If ADDIO_IO_USE_ADDITIONAL_VERIFICATION == false,
+	//there is no need to skip.
 	if(serial_io->flags.print_quick)
 	return serial_io->write(serial_io, buffer, size);
-
-	size_t succesful = io_write(serial_io, buffer, size);
+	#endif
 	
-	previous_write_timestamp = millis();
-	 
-	//if(serial_io->flags.tx_wait_for_complete)
-	//{
-		//if(serial_io->txReady != NULL)
-		//{
-			//start_millis = millis();
-			////This "io_descriptor->write" function does not wait internally,
-			////data will be overwritten if we do not wait.
-			//while(!serial_io->txReady(serial_io))
-			//{
-				//if(check_timeout(serial_timeout, start_millis))
-				//{
-					////Timed out
-					//return 0;
-				//}
-			//}
-		 //}
-	//}
-	  
-	 return succesful;
+	return io_write(serial_io, buffer, size);	
 }
  
  #pragma region Print Functions
@@ -200,6 +123,11 @@ size_t  serial_print_str(const char* str)
 	return s;
 }
 
+size_t __attribute__((__always_inline__)) serial_print_string(string_t* string)
+{
+	return serial_write(string->buf, string->length);
+}
+
 size_t __attribute__((__always_inline__)) serial_print_char(const char c)
 {
 	return serial_write(&c, 1);
@@ -236,7 +164,7 @@ size_t serial_printlnf(const char* format, ...)
 	return total_sent;
 }
 
-size_t __attribute__((__always_inline__)) serial_vprintlnf(const char* str, va_list ap)
+size_t serial_vprintlnf(const char* str, va_list ap)
 {
 	size_t total_sent = serial_vprintf(str, ap);
 	total_sent += serial_println();
@@ -244,7 +172,7 @@ size_t __attribute__((__always_inline__)) serial_vprintlnf(const char* str, va_l
 }
 
 
-size_t serial_println()
+size_t __attribute__((__always_inline__)) serial_println()
 {
 	return serial_print_str(NEWLINE);
 	//#if NEWLINE_CHAR == '\n'
@@ -262,14 +190,21 @@ size_t serial_println_str(const char* str)
 	return s;
 }
 
-size_t __attribute__((__always_inline__)) serial_println_char(const char c)
+size_t serial_println_string(string_t* string)
+{
+	size_t s = serial_write(string->buf, string->length);
+	s += serial_println();
+	return s;
+}
+
+size_t serial_println_char(const char c)
 {
 	size_t s = serial_write_byte((uint8_t)c);
 	s += serial_println();
 	return s;
 }
 
-size_t __attribute__((__always_inline__)) serial_println_bool(const bool b)
+size_t serial_println_bool(const bool b)
 {
 	size_t size = serial_print_bool(b);
 	size += serial_println();
@@ -678,7 +613,7 @@ size_t serial_print_data_hex_addr(const unsigned char *data, size_t input_length
 		//Label above the address
 		total_sent += INTERNAL_PRINTF_FUNC("%-10s%-4", "Offset");
 		
-		uint8_t base_addr = *data & 0xff;
+		uint8_t base_addr = (uint8_t)data & 0xff;
 		
 		
 		
@@ -700,7 +635,7 @@ size_t serial_print_data_hex_addr(const unsigned char *data, size_t input_length
 		
 	}
 	
-	for(int i = 0; i < input_length; i++)
+	for(uint32_t i = 0; i < input_length; i++)
 	{
 		uint8_t m = i % line_length;	
 		
@@ -730,9 +665,10 @@ size_t serial_print_data_hex_addr(const unsigned char *data, size_t input_length
 				
 				
 				//Instead of writing all at once, we want to print 0x00 as '.'
-				for(uint8_t s = (i+1) - current_line_length; s <= i; s++)
+				for(uint32_t s = (i+1) - current_line_length; s <= i; s++)
 				{
-					if(data[s] == 0 || data[s] == '\t')
+					
+					if(data[s] == 0 || char_equals(data[s], &whitespace_characters, sizeof(whitespace_characters))/*|| data[s] == '\t' || data[s] == '\n' || data[s] == '\r' || data[s] == '\v'*/)
 						total_sent += serial_print_char('.');
 					else
 						total_sent += serial_print_char(data[s]);

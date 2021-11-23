@@ -5,7 +5,18 @@
 
 #define CSTRING_DEFAULT_CAPACITY 16
 
+#if SYSTEM_TYPE == SYSTEM_TYPE_EMBEDDED
 #define CSTRING_MAX_SIZE		2048
+#elif SYSTEM_TYPE == SYSTEM_TYPE_PC
+#define CSTRING_MAX_SIZE		0x7FFFFFC7
+#endif
+
+//Currently only true is supported.
+///* 
+//*	If true, the length will be ran through ASSERT and compared to CSTRING_MAX_SIZE.
+//*	If false, and the length is larger than CSTRING_MAX_SIZE, the extra characters will be discarded.
+//*/
+//#define CSTRING_ASSERT_LENGTH true
 
 /*
 *	When adding items to a list, and the capacity has ran out,
@@ -43,6 +54,20 @@
 #elif	CSTRING_CAPACITY_INCREASE_METHOD == CSTRING_CAPACITY_INCREASE_METHOD_MULTIPLY
 #define CSTRING_INCREASE_CAPACITY(capacitySize)		capacitySize * CSTRING_CAPICTY_INCREASE_MULTIPLIER
 #endif
+
+
+/*
+*	If true,
+*	in functions that take char pointer and length,
+*	if the length is 0, length will be retrieved using strlen(str).
+*
+*	If false,
+*	It will be up to the user to provide the proper length.
+*
+*	*Certain functions have special functionality when passed a 0 length.
+*	 Read the function's comments for more info.
+*/
+#define CSTRING_0_LENGTH_GET_STRLEN true
 
 
 #endif /* CSTRING_CONFIG_H_ */

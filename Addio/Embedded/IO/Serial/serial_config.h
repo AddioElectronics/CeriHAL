@@ -11,7 +11,7 @@
 /*
 *	How many milliseconds will the read/write functions wait before timeout.
 */
-#define SERIAL_TIMEOUT 1000
+#define SERIAL_TIMEOUT 100
 
 
 ///*
