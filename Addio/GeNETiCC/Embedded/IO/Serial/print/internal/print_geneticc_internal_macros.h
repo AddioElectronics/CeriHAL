@@ -183,7 +183,7 @@ INTERNAL_PRINT_DATA_BASE_2, )
 *	Prints an array of bytes in the specified base, as multiple lines.
 *
 *	/param	*data				Pointer to starting memory address.
-*	/param	length				The amount of characters to display.
+*	/param	length				The amount of bytes to display.
 *	/param	line_length			(Default = 32)The amount of characters displayed on each line.
 *	/param	base				(Default = 16)The base to display each byte as.
 *	/param	separator			(Default = '\0')The character used to separate each byte.
@@ -195,7 +195,7 @@ serial_println_data_base_sep(data, length, base, line_length, separator);
 
 #define INTERNAL_PRINTLN_DATA_BASE_5(data, length, line_length, base, separator)	INTERNAL_PRINTLN_DATA_BASE(data, length, line_length, base, separator)
 #define INTERNAL_PRINTLN_DATA_BASE_4(data, length, line_length, base)				INTERNAL_PRINTLN_DATA_BASE(data, length, line_length, base, '\0')
-#define INTERNAL_PRINTLN_DATA_BASE_3(data, length, line_length)						INTERNAL_PRINTLN_DATA_BASE(data, length, line_length, base, '\0')
+#define INTERNAL_PRINTLN_DATA_BASE_3(data, length, line_length)						INTERNAL_PRINTLN_DATA_BASE(data, length, line_length, 16, '\0')
 #define INTERNAL_PRINTLN_DATA_BASE_2(data, length)									INTERNAL_PRINTLN_DATA_BASE(data, length, 32, 16, '\0')
 #define INTERNAL_PRINTLN_DATA_BASE_1(data)											INTERNAL_PRINTLN_DATA_BASE(data, sizeof(data), 32, 16, '\0')
 #define INTERNAL_PRINTLN_DATA_BASE_MACRO_CHOOSER(...)			\

@@ -51,8 +51,10 @@ void rx_state_machine(rx_states_t* rx_state, rx_parameters_t* rx_params);
 uint32_t usb_transfer_count = 0;
 uint32_t usart_transfer_count = 0;
 
+
 int main(void)
 {
+	
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
 	
@@ -103,10 +105,10 @@ int main(void)
 	//Prints to USB
 	Println("Initialized");
 	
+	
 	/* Replace with your application code */
 	while (1) {
 		
-
 		//Set USB CDC as active I/O descriptor.
 		Serial(USB_CDC_IO_PORT_ID);
 	

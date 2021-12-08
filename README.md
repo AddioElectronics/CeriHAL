@@ -1,5 +1,5 @@
 # CeriHAL
-#### `V0.1.0`
+#### `V0.1.1`
 
 C library for extending and redirecting the HAL IO drivers, and provides arduino like serial functions for printing and reading.
 
@@ -36,13 +36,13 @@ You may be better off looking at the [Example](https://github.com/AddioElectroni
   - USART
      - `#include "Addio/Embedded/IO/hal_io_extension/usart_async/addio_hal_usart_async_extension.h"`
 - Initialization
-  - Call `system_timer_init()` *2 *3 *4
+  - Call `system_timer_init()` *2 *3
 - USB
   - Call `cdc_stdio_init()`
   - Register your desired callbacks using `usb_cdc_stdio_register_callback`
   - Initialize Serial IO descriptor using `Serial_Init()`
 - USART
-  - Call `addio_usart_async_extend()` *5
+  - Call `addio_usart_async_extend()` *4
   - Register your desired callbacks using `usart_async_register_callback`
   - Initialize Serial IO descriptor using `Serial_Init()`
 - You can now use `printf`, `stdio_io_write`, `stdio_io_read`, `Print`, `Println`, and much more.
@@ -53,28 +53,10 @@ Some Serial functions/macros will not be able to be used with the original drive
 **2** : If the system timer is not available. You will need to write your own millis() function, which returns how many milliseconds have elapsed since program start.
 Create a source file and include "Addio\Embedded\Time\Timing\timing.h", which contains the millis() prototype.`
 
-**3** : If you are not using the Samd21, you will need to add includes to your IC in the `system_timer_atmelstart_cm0plus.c,` like the example below. In future versions more MCU's will be supported out of the box.
+**3** : If you are not using a cm0plus, you will need to add an include for that. As long as they use the same macros/functions/registers as cm0plus, if you choose to you can modify `system_timer_atmelstart_cm0plus.c,` or better yet create a new file for the CPU type.  In future versions more CPU's will be supported out of the box.
 
-**4** : If you are not using a cm0plus, you will need to add an include for that. As long as they use the same macros/functions/registers as cm0plus, if you choose to you can modify `system_timer_atmelstart_cm0plus.c,` or better yet create a new file for the CPU type.  In future versions more CPU's will be supported out of the box.
+**4** : You do not have to use the extended IO descriptors, although some Serial functions will not work. More info coming soon.
 
-**5** : You do not have to use the extended IO descriptors, although some Serial functions will not work. More info coming soon.
-
-__Adding new IC/CPU to system timer__
-``` C
-/*
-*	Include IC header
-*/
-#if defined(__SAMD21J18A__)
-#include <samd21j18a.h>
-
-#elif //Add your IC here.
-
-#else
-#error unsupported
-#endif
-
-#include <core_cm0plus.h> //Requires IC header.
-```
 
 ### Example
 

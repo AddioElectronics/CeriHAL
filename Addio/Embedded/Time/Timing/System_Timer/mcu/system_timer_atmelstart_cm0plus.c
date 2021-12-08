@@ -13,44 +13,7 @@
 #include <RTE_Components.h> //Contains ATMEL_START definition
 #if defined(ATMEL_START)
 
-/*
-*	Include IC header
-*/
-#if defined(__SAMD21J18A__)
-#include <samd21j18a.h>
-#elif defined(__SAMD21J17A__)
-#include <samd21j17a.h>
-#elif defined(__SAMD21J16A__)
-#include <samd21j16a.h>
-#elif defined(__SAMD21J15A__)
-#include <samd21j15a.h>
-#elif defined(__SAMD21G18A__)
-#include <samd21g18a.h>
-#elif defined(__SAMD21G17A__)
-#include <samd21g17a.h>
-#elif defined(__SAMD21G18AU__)
-#include <samd21g18au.h>
-#elif defined(__SAMD21G17AU__)
-#include <samd21g17au.h>
-#elif defined(__SAMD21G16A__)
-#include <samd21g16a.h>
-#elif defined(__SAMD21G15A__)
-#include <samd21j15a.h>
-#elif defined(__SAMD21E18A__)
-#include <samd21e18a.h>
-#elif defined(__SAMD21E17A__)
-#include <samd21e17a.h>
-#elif defined(__SAMD21E16A__)
-#include <samd21e16a.h>
-#elif defined(__SAMD21E15A__)
-#include <samd21e15a.h>
-#elif //Add your IC here.
-
-#else
-#error unsupported
-#endif
-
-#include <core_cm0plus.h> //Requires IC header.
+#include <parts.h>
 #include <peripheral_clk_config.h>
 
 /*

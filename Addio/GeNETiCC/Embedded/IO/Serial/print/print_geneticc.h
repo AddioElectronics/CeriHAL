@@ -162,7 +162,7 @@
 *	Displays an array of bytes in the specified base.
 *
 *	/param	*data				Pointer to starting memory address.
-*	/param	input_length		The amount of characters to display.
+*	/param	input_length		The amount of bytes to display.
 *	/param	base				(Default = 16)The base to display each byte as.
 *	/param	separator			(Default = 0)The character used to separate each byte. If 0 nothing will separate the characters.
 *
@@ -176,7 +176,7 @@
 *	Displays an array of bytes in the specified base, ending with a new line character.
 *
 *	/param	*data				Pointer to starting memory address.
-*	/param	input_length		The amount of characters to display.
+*	/param	input_length		The amount of bytes to display.
 *	/param	line_length			(Default = 32)The amount of characters displayed on each line.
 *	/param	base				(Default = 16)The base to display each byte as.
 *	/param	separator			(Default = 0)The character used to separate each byte. If 0 nothing will separate the characters.
@@ -191,7 +191,7 @@
 *	Prints a section of memory, displayed like a hex editor.
 *
 *	/param	*data				Pointer to starting memory address.
-*	/param	length				(Optional)The amount of characters to display.							*Required if data is not a static array.
+*	/param	length				(Optional)The amount of bytes to display.							*Required if data is not a static array.
 *	/param	line_length			(Default = 8)The amount of bytes displayed per line.
 *	/param	labels				(Default = true)Should the header labels be displayed at the top?
 *	/param	print_text			(Default = true)Should a text representation of the data be displayed?
