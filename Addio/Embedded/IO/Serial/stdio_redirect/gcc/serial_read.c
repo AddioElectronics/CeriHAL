@@ -1,8 +1,8 @@
 
-#include "../../../stdio_redirect/addio_stdio_io.h"
+#include "Addio/Embedded/IO/stdio_redirect/addio_stdio_io.h"
 #include <stdio.h>
 
-#include "../../serial.h"
+#include "Addio/Embedded/IO/Serial/serial.h"
 
 int _read(int file, char *ptr, int len); /* Remove GCC compiler warning */
 

@@ -5,9 +5,9 @@
 #define USING_ADDIO_UNIVERSAL_STANDARD_H_
 
 
-#if __has_include("../universal/standard/addio.universal.standard.h")
+#if __has_include("Addio/Universal/standard/addio.universal.standard.h")
 
-#include "../universal/Standard/Cstring/cstring.h"
+#include "Addio/Universal/Standard/Cstring/cstring.h"
 
 #else
 #error Library does not exist.

@@ -1,0 +1,7 @@
+[submodule "submodules/AS-HAL-USB-CDC-STDIO-Redirect"]
+	path = submodules/AS-HAL-USB-CDC-STDIO-Redirect
+	url = https://github.com/AddioElectronics/AS-HAL-USB-CDC-STDIO-Redirect.git
+[submodule "submodules/GeNETiCC"]
+	path = submodules/GeNETiCC
+	url = https://github.com/AddioElectronics/GeNETiCC.git
+	branch = GeNETiCC_Barebones_SubModule

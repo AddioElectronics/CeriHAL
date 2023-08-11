@@ -4,14 +4,14 @@
 #ifndef USING_GENETICC_H_
 #define USING_GENETICC_H_
 
-#if __has_include("../GeNETiCC/GeNETiCC.h")
+#if __has_include("Addio/GeNETiCC/GeNETiCC.h")
 
-#include "../GeNETiCC/config/geneticc_config.h"
-#include "../GeNETiCC/GeNETiCC.h"
+#include "Addio/GeNETiCC/config/geneticc_config.h"
+#include "Addio/GeNETiCC/GeNETiCC.h"
 
 #include "using_geneticc_collections.h"
 //#include "using_geneticc_io.h"
-#include "../GeNETiCC/DMA/geneticc_dma.h"
+#include "Addio/GeNETiCC/DMA/geneticc_dma.h"
 
 #else
 #error Library does not exist.

@@ -5,11 +5,11 @@
 #define USING_ADDIO_EMBEDDED_IO_SERIAL_H_
 
 
-#if __has_include("../embedded/io/serial/serial.h")
+#if __has_include("Addio/Embedded/io/serial/serial.h")
 
-#include "../embedded/io/serial/serial.h"
-#include "../embedded/io/serial/print/print.h"
-#include "../embedded/io/serial/reader/reader.h"
+#include "Addio/Embedded/io/serial/serial.h"
+#include "Addio/Embedded/io/serial/print/print.h"
+#include "Addio/Embedded/io/serial/reader/reader.h"
 
 #else
 #error Library does not exist.

@@ -4,7 +4,7 @@
 /*
 *	Addio Embedded Serial and either hal_io or Addio Embedded IO "library" required.
 */
-#if (__has_include("hal_io.h") || __has_include("../../addio_io.h"))/* && __has_include("../serial.h"))*/
+#if (__has_include("hal_io.h") || __has_include("Addio/Embedded/IO/addio_io.h"))/* && __has_include("serial.h"))*/
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -14,7 +14,7 @@
 
 #include "print_config.h"
 
-#include "../../../../Universal/Standard/Cstring/cstring.h"
+#include "Addio/Universal/Standard/Cstring/cstring.h"
 
 
 #pragma region Functions

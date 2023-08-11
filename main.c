@@ -84,7 +84,7 @@ int main(void)
 	/*
 		Initialize system timer for millis().
 		If you are using the system timer for something else, you will need to create your own millis() function.
-		millis() prototype located in "Addio\Embedded\Time\Timing\timing.h"
+		millis() prototype located in "Addio\Universal\Time\timing.h"
 		The option to use the RTC or a regular timer will be added in a future update.
 	*/
 	system_timer_init();

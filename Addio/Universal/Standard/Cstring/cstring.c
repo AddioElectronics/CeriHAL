@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <utils_assert.h>
 
-#include "../../Extensions/char_helper.h"
+#include "Addio/Universal/Extensions/char_helper.h"
 
 #define CSTRING_ASSERT_MAX_LENGTH(x) ASSERT(x <= CSTRING_MAX_SIZE)
 

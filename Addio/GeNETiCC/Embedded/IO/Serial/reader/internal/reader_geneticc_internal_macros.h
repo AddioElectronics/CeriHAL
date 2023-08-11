@@ -1,9 +1,9 @@
 #ifndef READER_GENETICC_INTERNAL_MACROS_H_
 #define READER_GENETICC_INTERNAL_MACROS_H_
-#if __has_include( "../../../../../preprocess/geneticc_internal_macros.h")
+#if __has_include( "Addio/GeNETiCC/preprocess/geneticc_internal_macros.h")
 
-#include "../../../../../../Embedded/IO/serial/reader/reader.h"
-#include "../../../../../preprocess/geneticc_internal_macros.h"
+#include "Addio/Embedded/IO/serial/reader/reader.h"
+#include "Addio/GeNETiCC/preprocess/geneticc_internal_macros.h"
 
 
 #define REPEATER_MACRO_GENETICC_READER_FIND_POINTER(target, length) serial_find(target, length)

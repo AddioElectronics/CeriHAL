@@ -4,7 +4,7 @@
 /*
 *	Addio Embedded Serial and either hal_io or Addio Embedded IO "library" required.
 */
-#if (__has_include("hal_io.h") || __has_include("../../addio_io.h")) /*&& __has_include("../serial.h"))*/
+#if (__has_include("hal_io.h") || __has_include("Addio/Embedded/IO/addio_io.h")) /*&& __has_include("serial.h"))*/
 
 #include "reader_config.h"
 #include "reader_defs.h"
@@ -13,12 +13,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "../../../../Universal/standard/cstring/cstring.h"
+#include "Addio/Universal/standard/cstring/cstring.h"
 
 /*
 *	These functions require addio_io.h, and are incompatible with hal_io.h
 */
-#if __has_include("../../addio_io.h")
+#if __has_include("Addio/Embedded/IO/addio_io.h")
 int serial_peek();
 int serial_available();
 int serial_flushRx();

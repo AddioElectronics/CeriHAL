@@ -1,7 +1,7 @@
 #ifndef CSTRING_CONFIG_H_
 #define CSTRING_CONFIG_H_
 
-#include "../../../config/addio_multisystem_config.h"
+#include "Addio/config/addio_multisystem_config.h"
 
 #define CSTRING_DEFAULT_CAPACITY 16
 

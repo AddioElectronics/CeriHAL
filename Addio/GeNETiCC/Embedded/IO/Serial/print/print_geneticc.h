@@ -4,7 +4,7 @@
 /*
 *	Addio Embedded Print library is required.
 */
-#if __has_include("../../../../../Embedded/IO/serial/print/print.h")
+#if __has_include("Addio/Embedded/IO/serial/print/print.h")
 
 
 #include "internal/print_geneticc_internal_macros.h"
@@ -15,7 +15,7 @@
 /*
 *	These macros require addio_io.h, and are incompatible with hal_io.h
 */
-#if __has_include("../../../../../Embedded/io/serial/addio_io.h")
+#if __has_include("Addio/Embedded/io/serial/addio_io.h")
 #define AvailableForWrite serial_availableForWrite(false)
 #endif
 

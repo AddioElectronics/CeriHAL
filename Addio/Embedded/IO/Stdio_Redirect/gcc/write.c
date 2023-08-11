@@ -31,7 +31,7 @@
  *
  */
 
-#include "../addio_stdio_io.h"
+#include "Addio/Embedded/IO/Stdio_Redirect/addio_stdio_io.h"
 #include <stdio.h>
 
 int __attribute__((weak)) _write(int file, char *ptr, int len); /* Remove GCC compiler warning */

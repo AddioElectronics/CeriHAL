@@ -3,8 +3,8 @@
 
 #include <utils.h>
 
-#include "../../addio_io.h"
-#include "../utils/utils_ringbuffer_extension.h"
+#include "Addio/Embedded/IO/addio_io.h"
+#include "Addio/Embedded/IO/hal_io_extension/utils/utils_ringbuffer_extension.h"
 
 static int32_t usart_async_peek(struct io_descriptor *const io_descr);
 static int32_t usart_async_peekMany(struct io_descriptor *const io_descr, const uint8_t* buf, const uint16_t length);

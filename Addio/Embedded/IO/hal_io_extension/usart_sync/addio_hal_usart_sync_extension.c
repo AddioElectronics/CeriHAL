@@ -4,7 +4,7 @@
 #include <utils.h>
 #include <utils_assert.h>
 
-#include "../../addio_io.h"
+#include "Addio/Embedded/IO/addio_io.h"
 
 static int32_t usart_sync_rxReady(struct io_descriptor *const io_descr);
 static int32_t usart_sync_txReady(struct io_descriptor *const io_descr);

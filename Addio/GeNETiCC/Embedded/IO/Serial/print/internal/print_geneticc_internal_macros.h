@@ -2,7 +2,7 @@
 #ifndef PRINT_GENETICC_INTERNAL_MACROS_H_
 #define PRINT_GENETICC_INTERNAL_MACROS_H_
 
-#include "../../../../../geneticc.h"
+#include "Addio/GeNETiCC/geneticc.h"
 #include "print_geneticc_internal_functions.h"
 
 
@@ -136,9 +136,9 @@ default:serial_println())
 /*
 *	These macros require the full GeNETiCC library, or at the very least "geneticc.h."
 */
-#if __has_include( "../../../../../preprocess/geneticc_internal_macros.h")
+#if __has_include( "Addio/GeNETiCC/preprocess/geneticc_internal_macros.h")
 
-#include  "../../../../../preprocess/geneticc_internal_macros.h"
+#include  "Addio/GeNETiCC/preprocess/geneticc_internal_macros.h"
 
 //#define REPEATER_MACRO_GENETICC_SERIAL_WRITE_POINTER(b, length)			write(b, length == 0 ? sizeof(b) : length)
 //#define INTERNAL_SERIAL_WRITE(b, length) _Generic((b),							\

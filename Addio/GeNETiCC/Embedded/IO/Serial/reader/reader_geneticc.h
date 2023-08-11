@@ -4,7 +4,7 @@
 /*
 *	Addio Embedded Serial/Reader library is required.
 */
-#if __has_include("../../../../../Embedded/IO/serial/reader/reader.h") && __has_include("../../../../../Embedded/IO/serial/serial.h")
+#if __has_include("Addio/Embedded/IO/serial/reader/reader.h") && __has_include("Addio/Embedded/IO/serial/serial.h")
 
 
 #include "internal/reader_geneticc_internal_macros.h"
@@ -12,7 +12,7 @@
 /*
 *	These macros require addio_io.h, and are incompatible with hal_io.h
 */
-#if __has_include("../../../../../Embedded/IO/addio_io.h")
+#if __has_include("Addio/Embedded/IO/addio_io.h")
 
 /*
 *	Gets the number of bytes available in the stream. This is only for bytes that have already arrived.

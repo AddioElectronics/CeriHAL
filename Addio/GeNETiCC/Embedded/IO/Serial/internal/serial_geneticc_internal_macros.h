@@ -1,7 +1,7 @@
 #ifndef SERIAL_GENETICC_INTERNAL_MACROS_H_
 #define SERIAL_GENETICC_INTERNAL_MACROS_H_
 
-#include "../../../../preprocess/geneticc_internal_macros.h"
+#include "Addio/GeNETiCC/preprocess/geneticc_internal_macros.h"
 
 //#define SERIAL_1(port_num)							serial_set_port(port_num)
 //#define SERIAL_0									serial_get_active_port

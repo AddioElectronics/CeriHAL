@@ -3,16 +3,16 @@
 
 #include <utils_assert.h>
 
-#if __has_include("../../../timing/system_timer/system_timer.h")
-#include "../../../timing/system_timer/system_timer.h"
+#if __has_include("Addio/Embedded/Time/timing/system_timer/system_timer.h")
+#include "Addio/Embedded/Time/timing/system_timer/system_timer.h"
 #endif
 
 
 #if __has_include("hal_io.h")
 #include <hal_io.h>
 extern struct io_descriptor* serial_io;
-#elif __has_include("../../addio_io.h")
-#include "../../addio_io.h"
+#elif __has_include("Addio/Embedded/IO/addio_io.h")
+#include "Addio/Embedded/IO/addio_io.h"
 extern struct io_descriptor* serial_io;
 #else
 #error unsupported
@@ -88,7 +88,7 @@ int serial_peekNextDigit(enum LookaheadMode lookahead, bool detectDecimal)
 //	Warning : This is unreliable with non buffered libraries like "hal usart sync." 
 int __attribute__((__always_inline__)) serial_available()
 {
-	#if __has_include("../../addio_io.h")
+	#if __has_include("Addio/Embedded/IO/addio_io.h")
 	
 	//Unsupported function.
 	ASSERT(serial_io->rxReady);
@@ -110,7 +110,7 @@ int __attribute__((__always_inline__)) serial_read()
 	//#if __has_include("addio_io.h")
 	//
 	//return serial_io->get(serial_io);
-	#if __has_include("hal_io.h") || __has_include("../../addio_io.h")
+	#if __has_include("hal_io.h") || __has_include("Addio/Embedded/IO/addio_io.h")
 	char data;
 	
 	if(serial_io->read(serial_io, &data, 1) == 0)
@@ -134,7 +134,7 @@ int __attribute__((__always_inline__)) serial_read()
 */
 int __attribute__((__always_inline__)) serial_peek()
 {
-	#if __has_include("../../addio_io.h")
+	#if __has_include("Addio/Embedded/IO/addio_io.h")
 	
 	//Unsupported function.
 	//Either the function has not been added to the IO descriptor,

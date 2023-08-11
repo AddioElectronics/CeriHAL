@@ -4,14 +4,14 @@
 /*
 *	hal_io or Addio Embedded IO library required.
 */
-#if __has_include("hal_io.h") || __has_include("../addio_io.h")
+#if __has_include("hal_io.h") || __has_include("Addio/Embedded/IO/addio_io.h")
 
 
 
 #if __has_include("hal_io.h")
 #include <hal_io.h>
-#elif __has_include("../addio_io.h")
-#include "../addio_io.h"
+#elif __has_include("Addio/Embedded/IO/addio_io.h")
+#include "Addio/Embedded/IO/addio_io.h"
 #else
 /*Add custom IO library*/
 #error Unsupported

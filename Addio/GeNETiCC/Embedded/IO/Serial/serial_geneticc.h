@@ -4,7 +4,7 @@
 /*
 *	Addio Embedded Serial library required
 */
-#if __has_include("../../../../embedded/io/serial/serial.h")
+#if __has_include("Addio/embedded/io/serial/serial.h")
 
 #include "internal/serial_geneticc_internal_macros.h"
 #include "print/print_geneticc.h"

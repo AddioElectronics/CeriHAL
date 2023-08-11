@@ -1,20 +1,13 @@
 # CeriHAL
-#### `V0.1.1`
+#### `V0.1.3`
 
 C library for extending and redirecting the HAL IO drivers, and provides arduino like serial functions for printing and reading.
 
-`Only tested using Atmel ARM MCU's with Atmel Start. May not be compatible with other MCU brands.`
  
- Contains [AS-HAL-USB-CDC-STDIO-Redirect](https://github.com/AddioElectronics/AS-HAL-USB-CDC-STDIO-Redirect).
- 
- Contains part of [GeNETiCC](https://github.com/AddioElectronics/GeNETiCC).
- 
-## Usage
+## Usage (Atmel Start)
 
-`More and better info coming soon` 
-
-You may be better off looking at the [Example](https://github.com/AddioElectronics/CeriHAL/blob/main/main.c).
-
+- Run `git clone https://github.com/AddioElectronics/CeriHAL.git`
+- Run `git submodule update --init --recursive`
 - Create a project with Atmel Start.
   - Add the `Middleware/Utilities/STDIO Redirect` component.
   - USB
@@ -24,8 +17,9 @@ You may be better off looking at the [Example](https://github.com/AddioElectroni
 	- Add the `Drivers/USART` component, or use the "Target_IO" from "STDIO Redirect".
 	- Under Component Settings, change Driver: to "HAL:Driver:USART_Async" or "HAL:Driver:USART_Sync"
   - Generate your project
-- Import the Addio folder and its contents to your project. *1
-- _(Optional)_ Edit the multiple "_config" files to your liking.
+- Move/Copy the CeriHAL folder to your project. *1
+- In your Atmel Studio project properties, include each CeriHAL\submodules\* path in "ARM/GNU C Compiler->Directories."
+- _(Optional)_ Edit the multiple "_config" files.
 - _(Optional)_In `atmel_start.c`, comment out `stdio_redirect_init();`
 - Include headers
   - `#include "Addio/Embedded/IO/Serial/serial.h"`
@@ -51,9 +45,9 @@ You may be better off looking at the [Example](https://github.com/AddioElectroni
 Some Serial functions/macros will not be able to be used with the original drivers.
 
 **2** : If the system timer is not available. You will need to write your own millis() function, which returns how many milliseconds have elapsed since program start.
-Create a source file and include "Addio\Embedded\Time\Timing\timing.h", which contains the millis() prototype.`
+Create a source file and include "Addio/Embedded/Time/System_Timer/system_timer.h", which contains the millis() prototype.`
 
-**3** : If you are not using a cm0plus, you will need to add an include for that. As long as they use the same macros/functions/registers as cm0plus, if you choose to you can modify `system_timer_atmelstart_cm0plus.c,` or better yet create a new file for the CPU type.  In future versions more CPU's will be supported out of the box.
+**3** : If you are using a new MCU or Core, it may not be supported yet. You can issue a bug report and I will add it asap. [If you wish to add support for an MCU or Core, there are short tutorials here.](https://github.com/AddioElectronics/AS-HAL-USB-CDC-STDIO-Redirect#How-to-Add-Support-for-a-Device)
 
 **4** : You do not have to use the extended IO descriptors, although some Serial functions will not work. More info coming soon.
 
@@ -119,6 +113,15 @@ The function prints memory in the format of a HEX editor.
   <td>Display a text representation in the right most column./td>
  </tr>
  </table>
+ 
+ ## Included Repos
+ 
+ ##### SubModules
+- [AS-HAL-USB-CDC-STDIO-Redirect](https://github.com/AddioElectronics/AS-HAL-USB-CDC-STDIO-Redirect). ***1**
+ ##### Partial Copy
+ - [GeNETiCC](https://github.com/AddioElectronics/GeNETiCC).
+ 
+ 1. Only compatible with Atmel Start
 
 ## License
 

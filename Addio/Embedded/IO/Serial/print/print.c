@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <utils_assert.h>
 
-#include "../../../Time/timing/timing.h"
+#include "Addio/Universal/Time/timing.h"
 
-#include "../serial_defs.h"
+#include "Addio/Embedded/IO/Serial/serial_defs.h"
 
-#include "../../../../Universal/codecs/base64.h"
+#include "Addio/Universal/codecs/base64.h"
 #include "internal/print_internal_functions.h"
 
 
@@ -38,7 +38,7 @@ extern unsigned long serial_timeout;
 /*
 *	These functions require addio_io.h, and are incompatible with hal_io.h
 */
-#if __has_include("../../addio_io.h")
+#if __has_include("Addio/Embedded/IO/addio_io.h")
 size_t serial_availableForWrite()
 {
 	if(serial_io->txReady != NULL)
