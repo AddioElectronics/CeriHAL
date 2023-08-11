@@ -53,12 +53,13 @@ Create a source file and include "Addio/Embedded/Time/System_Timer/system_timer.
 
 
 ### Example
-
 Example located in [main.c](https://github.com/AddioElectronics/CeriHAL/blob/main/main.c)
 
 Data will be echoed back, unless certain commands are sent.
 
 #### Commands
+`Commands are not apart of CeriHAL, they are specific to the example and simply used to display the CeriHAL functions.` 
+
  - %TXCOUNT : Returns the amount of tranfers received from the host.
  - %HEX 	: Starts waiting for a sequence of commands.
  
@@ -117,9 +118,8 @@ The function prints memory in the format of a HEX editor.
  ## Included Repos
  
  ##### SubModules
-- [AS-HAL-USB-CDC-STDIO-Redirect](https://github.com/AddioElectronics/AS-HAL-USB-CDC-STDIO-Redirect). ***1**
- ##### Partial Copy
- - [GeNETiCC](https://github.com/AddioElectronics/GeNETiCC).
+- [AS-HAL-USB-CDC-STDIO-Redirect](https://github.com/AddioElectronics/AS-HAL-USB-CDC-STDIO-Redirect) ***1**
+- [GeNETiCC-Barebones](https://github.com/AddioElectronics/GeNETiCC/tree/GeNETiCC_Barebones_SubModule)
  
  1. Only compatible with Atmel Start
 
